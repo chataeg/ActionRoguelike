@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "SCharacter.generated.h"
 #include "InputAction.h"
+#include "SCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
-class UinputMappingContext;
+class UInputMappingContext;
 class UInputComponent;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
@@ -26,31 +27,31 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Move;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_LookMouse;
-
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_LookStick;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_Jump;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_Interact;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_Sprint;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_Dash;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_PrimaryAttack;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_SecondaryAttack;
-	
+	// UPROPERTY(EditDefaultsOnly, Category="Input")
+	// TObjectPtr<UInputAction> Input_LookStick;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category="Input")
+	// TObjectPtr<UInputAction> Input_Jump;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category="Input")
+	// TObjectPtr<UInputAction> Input_Interact;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category="Input")
+	// TObjectPtr<UInputAction> Input_Sprint;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category="Input")
+	// TObjectPtr<UInputAction> Input_Dash;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category="Input")
+	// TObjectPtr<UInputAction> Input_PrimaryAttack;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category="Input")
+	// TObjectPtr<UInputAction> Input_SecondaryAttack;
+	//
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
