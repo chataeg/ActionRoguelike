@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+
 // Sets default values
 
 ASCharacter::ASCharacter()
@@ -17,7 +18,7 @@ ASCharacter::ASCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	// 캐릭터가 이동 방향으로 자동 회전
+	// 캐릭터 / 캐릭터 메쉬가 이동 방향으로 자동 회전
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	// 컨트롤러 회전을 캐릭터가 따라가지 않게 함 (카메라와 입력 분리)
 	bUseControllerRotationYaw = false;
@@ -27,9 +28,8 @@ ASCharacter::ASCharacter()
 	// 카메라가 컨트롤러 회전을 따라감
 	SpringArmComp->bUsePawnControlRotation = true;
 	SpringArmComp->SetupAttachment(RootComponent);
-	// 부모 회전을 무시하고 절대 좌표로 회전함
+	// 부모(캐릭터) 회전을 무시하고 절대 좌표로 회전함
 	SpringArmComp->SetUsingAbsoluteRotation(true);
-
 	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
@@ -64,7 +64,7 @@ void ASCharacter::Move(const FInputActionInstance& Instance)
 	AddMovementInput(RightVector,AxisValue.X);
 
 	// 아래처럼 작성도 가능하다. (똑같이 동작함.)
-	// 	const FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
+	// const FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
 	// AddMovementInput(GetActorForwardVector(),AxisValue.Y);
 	// AddMovementInput(GetActorRightVector(),AxisValue.X);
 	
@@ -73,7 +73,6 @@ void ASCharacter::Move(const FInputActionInstance& Instance)
 void ASCharacter::LookMouse(const FInputActionValue& InputValue)
 {
 	UE_LOG(LogTemp,Log,TEXT("ASCharacter::LookMouse"));
-	
 	const FVector2D Value = InputValue.Get<FVector2D>();
 	
 	AddControllerYawInput(Value.X);
@@ -83,6 +82,20 @@ void ASCharacter::LookMouse(const FInputActionValue& InputValue)
 void ASCharacter::LookStick(const FInputActionValue& InputValue)
 {
 	
+}
+
+void ASCharacter::PrimaryAttack()
+{
+	UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryAttack"));
+	
+	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+
+	FTransform SpawnTM = FTransform(GetControlRotation(),HandLocation);
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM,SpawnParams);
 }
 
 
@@ -116,7 +129,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComp->BindAction(Input_Move, ETriggerEvent::Triggered,this,&ASCharacter::Move);
 	InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered,this,&ASCharacter::LookMouse);
 	
+	InputComp->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
+	
 	
 	
 }
-

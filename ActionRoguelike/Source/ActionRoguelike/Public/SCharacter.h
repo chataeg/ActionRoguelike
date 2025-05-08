@@ -16,6 +16,10 @@ UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
 	
 public:
 	// Sets default values for this character's properties
@@ -45,18 +49,18 @@ protected:
 	//
 	// UPROPERTY(EditDefaultsOnly, Category="Input")
 	// TObjectPtr<UInputAction> Input_Dash;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category="Input")
-	// TObjectPtr<UInputAction> Input_PrimaryAttack;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_PrimaryAttack;
 	//
 	// UPROPERTY(EditDefaultsOnly, Category="Input")
 	// TObjectPtr<UInputAction> Input_SecondaryAttack;
 	//
 	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArmComp;
+	TObjectPtr<USpringArmComponent> SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComp;
+	TObjectPtr<UCameraComponent> CameraComp;
 
 	
 	// Called when the game starts or when spawned
@@ -67,6 +71,8 @@ protected:
 	void LookMouse(const FInputActionValue& InputValue);
 	
 	void LookStick(const FInputActionValue& InputValue);
+
+	void PrimaryAttack();
 
 
 public:	
