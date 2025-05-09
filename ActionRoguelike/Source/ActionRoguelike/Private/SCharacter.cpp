@@ -115,6 +115,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	const APlayerController* PC = GetController<APlayerController>();
 	const ULocalPlayer* LP = PC->GetLocalPlayer();
 
+	// 입력 서브시스템을 가져오고 check
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(Subsystem);
 	
@@ -130,7 +131,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered,this,&ASCharacter::LookMouse);
 	
 	InputComp->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
-	
+	InputComp->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ASCharacter::Jump);
 	
 	
 }

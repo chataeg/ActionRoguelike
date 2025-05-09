@@ -38,9 +38,9 @@ protected:
 	// UPROPERTY(EditDefaultsOnly, Category="Input")
 	// TObjectPtr<UInputAction> Input_LookStick;
 	//
-	// UPROPERTY(EditDefaultsOnly, Category="Input")
-	// TObjectPtr<UInputAction> Input_Jump;
-	//
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_Jump;
+	
 	// UPROPERTY(EditDefaultsOnly, Category="Input")
 	// TObjectPtr<UInputAction> Input_Interact;
 	//
