@@ -35,7 +35,7 @@ ASCharacter::ASCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 
-
+	// 상호작용 하게 해주는 액터컴포넌트 부착
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>(TEXT("InteractionComp"));
 	
 }
@@ -93,12 +93,14 @@ void ASCharacter::LookStick(const FInputActionValue& InputValue)
 void ASCharacter::PrimaryAttack()
 {
 	UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryAttack"));
-
+	// AnimMontage 플레이
 	PlayAnimMontage(AttackAnim);
 
+	// 0.2초가 지나면 메서드가 불리게 한다.
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack,this,&ASCharacter::PrimaryAttack_TimeElasped,0.2f);
-	
-	//GetWorldTimerManager().ClearTimer(TimerHanlde_PrimaryAttack);
+
+	// 타이머 종료 방법 
+	// GetWorldTimerManager().ClearTimer(TimerHanlde_PrimaryAttack);
 
 	
 	
@@ -107,10 +109,13 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::PrimaryAttack_TimeElasped()
 {
+	
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
+	// 컨트롤러가 보고 있는 방향과 손 소켓의 위치로 Projectile을 발사할 트랜스폼 설정
 	FTransform SpawnTM = FTransform(GetControlRotation(),HandLocation);
 
+	// 스폰 관련해 파라미터 설정할 구조체
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
@@ -121,7 +126,8 @@ void ASCharacter::PrimaryAttack_TimeElasped()
 void ASCharacter::Interact()
 {
 	UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryInteract"));
-	
+
+	// nullptr 일 경우는 없지만 (생명 주기 때문에) 안전하게 널체크
 	if (InteractionComp)
 	{
 		InteractionComp->PrimaryInteract();

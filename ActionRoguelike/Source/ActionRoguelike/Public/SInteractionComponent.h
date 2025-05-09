@@ -6,6 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "SInteractionComponent.generated.h"
 
+/*
+ * Interaction 을 가능하게 해주는 인터페이스를 구현한 ActorComponent
+ */
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USInteractionComponent : public UActorComponent

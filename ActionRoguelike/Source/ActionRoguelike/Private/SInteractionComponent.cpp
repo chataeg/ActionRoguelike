@@ -36,27 +36,32 @@ void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void USInteractionComponent::PrimaryInteract()
 {
-	
+	// Interaction Logic
 	
 	UE_LOG(LogTemp,Log,TEXT("USInteractionComponent::PrimaryInteract"));
+	
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 
-	// 캐릭터 가져오기
+	// 캐릭터 / 오너  가져오기
 	AActor* MyOwner = GetOwner();
 	
 	FVector EyeLocation;
 	FRotator EyeRotation;
+
+	// eye 의 Location / Rotation 을 가져옴
 	MyOwner->GetActorEyesViewPoint(EyeLocation,EyeRotation);
 
+	// LineTrace / RayCast 가 끝날 위치
 	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
 
-	
+
+	// 단일 LineTraace
 	// FHitResult Hit;
 	// bool bBlockingHit = GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End ,ObjectQueryParams);
 
+	// Sweep
 	TArray<FHitResult> Hits;
-
 	float Radius = 30.f;
 	
 	FCollisionShape Shape;
@@ -65,27 +70,28 @@ void USInteractionComponent::PrimaryInteract()
 	bool bBlockingHit = GetWorld()->SweepMultiByObjectType(Hits,EyeLocation,End,FQuat::Identity, ObjectQueryParams, Shape);
 
 	FColor LineColor = bBlockingHit ? FColor::Green : FColor::Red;
+
 	for (FHitResult Hit : Hits)
 	{
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor)
 		{
-		
-			UE_LOG(LogTemp,Log,TEXT("USInteractionComponent::ActorHit"));
+			
 			// 인터페이스를 구현하는지 확인(접두 U 로 해야 함, 사용할 땐 I)
 			if(HitActor->Implements<USGameplayInterface>())
 				//if(HitActor->GetClass()->ImplementsInterface(USGameplayInterface::StaticClass()))
 			{
-			
+				// Pawn 으로 강제 형변환. 형변환시 불가하면 nullptr 이 된다. 
 				APawn* MyPawn = Cast<APawn>(MyOwner);
 
 				// 인터페이스 실행은 Execute_메서드이름  으로 한다.
 				ISGameplayInterface::Execute_Interact(HitActor, MyPawn);
+				DrawDebugSphere(GetWorld(), Hit.ImpactPoint,Radius,32, LineColor, false, 2.0f);
 				break;
 			}
 		}
 		
-		DrawDebugSphere(GetWorld(), Hit.ImpactPoint,Radius,32, LineColor, false, 2.0f);
+	
 	}
 	
 	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f,0,2.0f);
