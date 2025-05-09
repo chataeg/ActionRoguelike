@@ -7,6 +7,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "SInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
@@ -33,6 +34,10 @@ ASCharacter::ASCharacter()
 	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
+
+
+	InteractionComp = CreateDefaultSubobject<USInteractionComponent>(TEXT("InteractionComp"));
+	
 }
 
 // Called when the game starts or when spawned
@@ -84,10 +89,24 @@ void ASCharacter::LookStick(const FInputActionValue& InputValue)
 	
 }
 
+
 void ASCharacter::PrimaryAttack()
 {
 	UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryAttack"));
+
+	PlayAnimMontage(AttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack,this,&ASCharacter::PrimaryAttack_TimeElasped,0.2f);
 	
+	//GetWorldTimerManager().ClearTimer(TimerHanlde_PrimaryAttack);
+
+	
+	
+}
+
+
+void ASCharacter::PrimaryAttack_TimeElasped()
+{
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
 	FTransform SpawnTM = FTransform(GetControlRotation(),HandLocation);
@@ -97,6 +116,19 @@ void ASCharacter::PrimaryAttack()
 	
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM,SpawnParams);
 }
+
+
+void ASCharacter::Interact()
+{
+	UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryInteract"));
+	
+	if (InteractionComp)
+	{
+		InteractionComp->PrimaryInteract();
+	}
+}
+
+
 
 
 // Called every frame
@@ -132,6 +164,6 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	
 	InputComp->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
 	InputComp->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ASCharacter::Jump);
-	
+	InputComp->BindAction(Input_Interact, ETriggerEvent::Triggered, this, &ASCharacter::Interact);
 	
 }

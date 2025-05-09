@@ -26,7 +26,8 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 void ASExplosiveBarrel::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// 기본 델리게이트 OnComponentHit 에 동적 바인딩
 	StaticMesh->OnComponentHit.AddDynamic(this,&ASExplosiveBarrel::OnHit);
 	
 }

@@ -11,6 +11,8 @@ class UCameraComponent;
 class USpringArmComponent;
 class UInputMappingContext;
 class UInputComponent;
+class USInteractionComponent;
+class UAnimMontage;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
@@ -18,8 +20,15 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,  Category="Attack")
 	TSubclassOf<AActor> ProjectileClass;
+	
+	UPROPERTY(EditAnywhere, Category="Attack")
+	TObjectPtr<UAnimMontage> AttackAnim;
+
+	FTimerHandle TimerHandle_PrimaryAttack;
+
+	void PrimaryAttack_TimeElasped();
 	
 public:
 	// Sets default values for this character's properties
@@ -41,8 +50,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Jump;
 	
-	// UPROPERTY(EditDefaultsOnly, Category="Input")
-	// TObjectPtr<UInputAction> Input_Interact;
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_Interact;
 	//
 	// UPROPERTY(EditDefaultsOnly, Category="Input")
 	// TObjectPtr<UInputAction> Input_Sprint;
@@ -62,6 +71,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USInteractionComponent> InteractionComp;
+	
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -73,6 +85,8 @@ protected:
 	void LookStick(const FInputActionValue& InputValue);
 
 	void PrimaryAttack();
+
+	void Interact();
 
 
 public:	
