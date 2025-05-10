@@ -31,7 +31,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> BaseMesh;
 
-	UPROPERTY(VisibleAnyWhere)
+	UPROPERTY(VisibleAnyWhere, BlueprintReadOnly)
 	TObjectPtr<UStaticMeshComponent> LidMesh;
 	
 

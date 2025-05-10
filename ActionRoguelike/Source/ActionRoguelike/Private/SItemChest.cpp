@@ -22,6 +22,9 @@ ASItemChest::ASItemChest()
 
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
+	// BP 에서 오버라이드 하였기 때문에 동작하지 않는다.
+
+	
 	UE_LOG(LogTemp,Log,TEXT("Interact_Implementation"));
 
 	LidMesh->SetRelativeRotation(FRotator(TargetPitch,0,0));
