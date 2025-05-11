@@ -118,8 +118,10 @@ void ASCharacter::PrimaryAttack_TimeElasped()
 	// 스폰 관련해 파라미터 설정할 구조체
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	// 내장된 Instigator 로 시전자 설정 
+	SpawnParams.Instigator = this;
 	
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM,SpawnParams);
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
 
 
