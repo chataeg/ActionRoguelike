@@ -50,7 +50,7 @@ void ASCharacter::BeginPlay()
 void ASCharacter::Move(const FInputActionInstance& Instance)
 {
 
-	UE_LOG(LogTemp,Log,TEXT("ASCharacter::Move"));
+	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::Move"));
 	
 	// 컨트롤러 yaw 회전값 가져오기
 	FRotator ControlRot = GetControlRotation();
@@ -77,7 +77,7 @@ void ASCharacter::Move(const FInputActionInstance& Instance)
 
 void ASCharacter::LookMouse(const FInputActionValue& InputValue)
 {
-	UE_LOG(LogTemp,Log,TEXT("ASCharacter::LookMouse"));
+	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::LookMouse"));
 	const FVector2D Value = InputValue.Get<FVector2D>();
 	
 	AddControllerYawInput(Value.X);
@@ -92,7 +92,7 @@ void ASCharacter::LookStick(const FInputActionValue& InputValue)
 
 void ASCharacter::PrimaryAttack()
 {
-	UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryAttack"));
+	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryAttack"));
 	// AnimMontage 플레이
 	PlayAnimMontage(AttackAnim);
 
@@ -127,7 +127,7 @@ void ASCharacter::PrimaryAttack_TimeElasped()
 
 void ASCharacter::Interact()
 {
-	UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryInteract"));
+	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryInteract"));
 
 	// nullptr 일 경우는 없지만 (생명 주기 때문에) 안전하게 널체크
 	if (InteractionComp)
