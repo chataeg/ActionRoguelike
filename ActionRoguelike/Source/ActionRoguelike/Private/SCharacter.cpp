@@ -109,19 +109,25 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::PrimaryAttack_TimeElasped()
 {
+	// How to Debug
+	// ensure 은 한번만 트리거된다. 항상 하려면 ensureAlways 사용 shpping에서 ensure 는 사라진다.
+	// check 는 잘 안쓴다. 트리거되면 계속 진행이 안 되어서.
 	
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-
-	// 컨트롤러가 보고 있는 방향과 손 소켓의 위치로 Projectile을 발사할 트랜스폼 설정
-	FTransform SpawnTM = FTransform(GetControlRotation(),HandLocation);
-
-	// 스폰 관련해 파라미터 설정할 구조체
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	// 내장된 Instigator 로 시전자 설정 
-	SpawnParams.Instigator = this;
-	
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+	if (ensure(ProjectileClass))
+	{
+		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+        
+        	// 컨트롤러가 보고 있는 방향과 손 소켓의 위치로 Projectile을 발사할 트랜스폼 설정
+        	FTransform SpawnTM = FTransform(GetControlRotation(),HandLocation);
+        
+        	// 스폰 관련해 파라미터 설정할 구조체
+        	FActorSpawnParameters SpawnParams;
+        	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+        	// 내장된 Instigator 로 시전자 설정 
+        	SpawnParams.Instigator = this;
+        	
+        	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+	}
 }
 
 
