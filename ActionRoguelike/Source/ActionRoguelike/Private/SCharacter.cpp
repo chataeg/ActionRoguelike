@@ -8,7 +8,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "SInteractionComponent.h"
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values
@@ -47,11 +49,41 @@ void ASCharacter::BeginPlay()
 	
 }
 
+// Called to bind functionality to input
+// 플레이어 컨트롤러가 폰을 소유했을 때 자동적으로 한번 호출된다.
+void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	const APlayerController* PC = GetController<APlayerController>();
+	const ULocalPlayer* LP = PC->GetLocalPlayer();
+
+	// 입력 서브시스템을 가져오고 check
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(Subsystem);
+	
+	Subsystem->ClearAllMappings();
+
+	Subsystem->AddMappingContext(DefaultInputMapping,0);
+
+	UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+
+	// 바인딩
+	// General
+	InputComp->BindAction(Input_Move, ETriggerEvent::Triggered,this,&ASCharacter::Move);
+	InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered,this,&ASCharacter::LookMouse);
+	
+	InputComp->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
+	InputComp->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ASCharacter::Jump);
+	InputComp->BindAction(Input_Interact, ETriggerEvent::Triggered, this, &ASCharacter::Interact);
+	InputComp->BindAction(Input_SecondaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::SecondaryAttack);
+	InputComp->BindAction(Input_Dash, ETriggerEvent::Triggered, this, &ASCharacter::Dash);
+	
+}
+
 void ASCharacter::Move(const FInputActionInstance& Instance)
 {
-
 	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::Move"));
-	
 	// 컨트롤러 yaw 회전값 가져오기
 	FRotator ControlRot = GetControlRotation();
 	ControlRot.Pitch = 0.0f;
@@ -86,7 +118,6 @@ void ASCharacter::LookMouse(const FInputActionValue& InputValue)
 
 void ASCharacter::LookStick(const FInputActionValue& InputValue)
 {
-	
 }
 
 
@@ -101,36 +132,112 @@ void ASCharacter::PrimaryAttack()
 
 	// 타이머 종료 방법 
 	// GetWorldTimerManager().ClearTimer(TimerHanlde_PrimaryAttack);
+}
 
+void ASCharacter::SecondaryAttack()
+{
+	PlayAnimMontage(AttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack,this,&ASCharacter::SecondaryAttack_TimeElasped,0.2f);
+}
+
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
+{
+
+	// How to Debug
+	// ensure 은 한번만 트리거된다. 항상 하려면 ensureAlways 사용 shpping에서 ensure 는 사라진다.
+	// check 는 잘 안쓴다. 트리거되면 계속 진행이 안 되고 abort 해서.
 	
+	// if (ensure(ClassToSpawn))
+	// {
+	// 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	// 	// FRotator HandRotation = GetMesh()->GetSocketRotation(("Muzzle_o1"));
+	// 	// 컨트롤러가 보고 있는 방향과 손 소켓의 위치로 Projectile을 발사할 트랜스폼 설정
+	// 	// AssignMent 2 - 크로스헤어에 맞게 보정
+ //  
+	// 	FVector PawnLocation = CameraComp->GetComponentLocation();
+	// 	
+	// 	
+	// 	FHitResult Hit;
+	// 	FVector End = CameraComp->GetComponentLocation() + (CameraComp->GetComponentRotation().Vector() * 50000);
+	// 	FCollisionObjectQueryParams ObjectQueryParams;
+	// 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	// 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	// 	
+	// 	if (GetWorld()->LineTraceSingleByObjectType(Hit,PawnLocation, End, ObjectQueryParams))
+	// 	{
+	// 		FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation,Hit.ImpactPoint);
+ //  
+	// 		FTransform SpawnTM = FTransform(NewRotation,HandLocation);
+	//        
+	// 		// 스폰 관련해 파라미터 설정할 구조체
+	// 		FActorSpawnParameters SpawnParams;
+	// 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	// 		// 내장된 Instigator 로 시전자 설정 
+	// 		SpawnParams.Instigator = this;
+ //       		
+	// 		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
+	// 	
+	// 	}
+	// 	DrawDebugLine(GetWorld(), HandLocation, Hit.Location, FColor::Red, false, 2.0f, 0, 1.0f);
+	// }
+
+	// How to LineTrace
+	// How to Sweep
+	if (ensure(ClassToSpawn))
+	{
+		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+
+		// 항상 스폰하게 하고 시전자 설정
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.Instigator = this;
+
+		// Sweep 구체 크기 설정
+		FCollisionShape Shape;
+		Shape.SetSphere(20.f);
+
+		// 충돌 속성 설정
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+
+		// 충돌 쿼리 설정
+		FCollisionObjectQueryParams ObjParams;
+		ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+		ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+		ObjParams.AddObjectTypesToQuery(ECC_Pawn);
 	
+		FVector TraceStart = CameraComp->GetComponentLocation();
+	
+		FVector TraceEnd = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 5000);
+
+		// Hit 시 정보를 저장할 구조체
+		FHitResult Hit;
+	
+		if (GetWorld()->SweepSingleByObjectType(Hit,TraceStart,TraceEnd,FQuat::Identity, ObjParams,Shape,Params))
+		{
+			TraceEnd = Hit.ImpactPoint;
+		}
+	
+		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd-HandLocation).Rotator();
+	
+		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
+		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM,SpawnParams);
+	
+		DrawDebugLine(GetWorld(), HandLocation, Hit.Location, FColor::Red, false, 2.0f, 0, 1.0f);
+		//UE_LOG(LogTemp, Warning, TEXT("Instigator: %s"), *GetInstigator()->GetName());
+	}
 }
 
 
 void ASCharacter::PrimaryAttack_TimeElasped()
 {
-	// How to Debug
-	// ensure 은 한번만 트리거된다. 항상 하려면 ensureAlways 사용 shpping에서 ensure 는 사라진다.
-	// check 는 잘 안쓴다. 트리거되면 계속 진행이 안 되어서.
-	
-	if (ensure(ProjectileClass))
-	{
-		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-        
-        	// 컨트롤러가 보고 있는 방향과 손 소켓의 위치로 Projectile을 발사할 트랜스폼 설정
-        	FTransform SpawnTM = FTransform(GetControlRotation(),HandLocation);
-        
-        	// 스폰 관련해 파라미터 설정할 구조체
-        	FActorSpawnParameters SpawnParams;
-        	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-        	// 내장된 Instigator 로 시전자 설정 
-        	SpawnParams.Instigator = this;
-        	
-        	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
-	}
+	SpawnProjectile(PrimaryAttackClass);
 }
-
-
+void ASCharacter::SecondaryAttack_TimeElasped()
+{
+	SpawnProjectile(SecondaryAttackClass);
+}
 void ASCharacter::Interact()
 {
 	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryInteract"));
@@ -142,8 +249,16 @@ void ASCharacter::Interact()
 	}
 }
 
+void ASCharacter::Dash()
+{
+	PlayAnimMontage(AttackAnim);
+	GetWorldTimerManager().SetTimer(TimerHandle_Dash,this,&ASCharacter::Dash_TimeElasped,0.2f);
+}
 
-
+void ASCharacter::Dash_TimeElasped()
+{
+	SpawnProjectile(DashProjectileClass);
+}
 
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
@@ -152,32 +267,3 @@ void ASCharacter::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-// 플레이어 컨트롤러가 폰을 소유했을 때 자동적으로 한번 호출된다.
-void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	const APlayerController* PC = GetController<APlayerController>();
-	const ULocalPlayer* LP = PC->GetLocalPlayer();
-
-	// 입력 서브시스템을 가져오고 check
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	check(Subsystem);
-	
-	Subsystem->ClearAllMappings();
-
-	Subsystem->AddMappingContext(DefaultInputMapping,0);
-
-	UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
-
-	// 바인딩
-	// General
-	InputComp->BindAction(Input_Move, ETriggerEvent::Triggered,this,&ASCharacter::Move);
-	InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered,this,&ASCharacter::LookMouse);
-	
-	InputComp->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
-	InputComp->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ASCharacter::Jump);
-	InputComp->BindAction(Input_Interact, ETriggerEvent::Triggered, this, &ASCharacter::Interact);
-	
-}

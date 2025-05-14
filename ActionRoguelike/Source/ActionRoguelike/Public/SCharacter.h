@@ -20,15 +20,30 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
+
+	// TSubclassof : 에디터에서 특정 클래스슬 지정 가능하게 만드는 타입. (포인터 아님)
 	UPROPERTY(EditAnywhere,  Category="Attack")
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> PrimaryAttackClass;
+
+	UPROPERTY(EditAnywhere,  Category="Attack")
+	TSubclassOf<AActor> SecondaryAttackClass;
+	
+	UPROPERTY(EditAnywhere,  Category="Attack")
+	TSubclassOf<AActor> DashProjectileClass;
 	
 	UPROPERTY(EditAnywhere, Category="Attack")
 	TObjectPtr<UAnimMontage> AttackAnim;
 
 	FTimerHandle TimerHandle_PrimaryAttack;
+	
+	FTimerHandle TimerHandle_SecondaryAttack;
+
+	FTimerHandle TimerHandle_Dash;
+	
 
 	void PrimaryAttack_TimeElasped();
+	void SecondaryAttack_TimeElasped();
+	void Dash_TimeElasped();
 	
 public:
 	// Sets default values for this character's properties
@@ -55,16 +70,16 @@ protected:
 	//
 	// UPROPERTY(EditDefaultsOnly, Category="Input")
 	// TObjectPtr<UInputAction> Input_Sprint;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category="Input")
-	// TObjectPtr<UInputAction> Input_Dash;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_Dash;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_PrimaryAttack;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category="Input")
-	// TObjectPtr<UInputAction> Input_SecondaryAttack;
-	//
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_SecondaryAttack;
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
 
@@ -86,7 +101,14 @@ protected:
 
 	void PrimaryAttack();
 
+	void SecondaryAttack();
+
+	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
+	
 	void Interact();
+
+	void Dash();
+
 
 
 public:	
