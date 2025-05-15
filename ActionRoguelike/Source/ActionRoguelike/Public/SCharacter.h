@@ -13,6 +13,7 @@ class UInputMappingContext;
 class UInputComponent;
 class USInteractionComponent;
 class UAnimMontage;
+class USAttributeComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
@@ -88,6 +89,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USInteractionComponent> InteractionComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<USAttributeComponent> AttributeComp;
 	
 	
 	// Called when the game starts or when spawned

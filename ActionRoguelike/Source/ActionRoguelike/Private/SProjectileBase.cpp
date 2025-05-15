@@ -2,6 +2,8 @@
 
 
 #include "SProjectileBase.h"
+
+#include "SMagicProjectile.h"
 #include "kismet/GameplayStatics.h"
 
 #include "Components/SphereComponent.h"
@@ -23,7 +25,7 @@ ASProjectileBase::ASProjectileBase()
 	// 모두 무시
 	// SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	// 따로 설정도 가능
-	// SphereComp->SetCollisionResponseToChannel(ECC_Pawn,ECR_Overlap);
+	//SphereComp->SetCollisionResponseToChannel(ECC_Pawn,ECR_Overlap);
 	
 	RootComponent = SphereComp;
 	
@@ -61,7 +63,7 @@ void ASProjectileBase::Explode_Implementation()
 void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-		Explode();
+		//Explode();
 }
 
 void ASProjectileBase::PostInitializeComponents()

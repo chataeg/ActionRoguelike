@@ -7,6 +7,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -39,6 +40,8 @@ ASCharacter::ASCharacter()
 
 	// 상호작용 하게 해주는 액터컴포넌트 부착
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>(TEXT("InteractionComp"));
+
+	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	
 }
 
@@ -68,7 +71,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 
-	// 바인딩
+	// input binding바인딩
 	// General
 	InputComp->BindAction(Input_Move, ETriggerEvent::Triggered,this,&ASCharacter::Move);
 	InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered,this,&ASCharacter::LookMouse);
@@ -119,7 +122,6 @@ void ASCharacter::LookMouse(const FInputActionValue& InputValue)
 void ASCharacter::LookStick(const FInputActionValue& InputValue)
 {
 }
-
 
 void ASCharacter::PrimaryAttack()
 {
@@ -222,7 +224,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd-HandLocation).Rotator();
 	
 		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
-		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM,SpawnParams);
+		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
 	
 		DrawDebugLine(GetWorld(), HandLocation, Hit.Location, FColor::Red, false, 2.0f, 0, 1.0f);
 		//UE_LOG(LogTemp, Warning, TEXT("Instigator: %s"), *GetInstigator()->GetName());
