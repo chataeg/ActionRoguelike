@@ -66,6 +66,7 @@ void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Oth
 		//Explode();
 }
 
+// How to PostInitialIzeComponents : 생성자 다음에 실행
 void ASProjectileBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
