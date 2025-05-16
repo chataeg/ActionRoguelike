@@ -22,7 +22,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 
 	UE_LOG(LogTemp,Warning,TEXT("dsafsdafasdfasdfsadfasdfsadf"));
 	
-	if (OtherActor)
+	if (OtherActor && OtherActor != GetInstigator())
 	{
 		// How to GetComponentByClass : StaticClass 를 통해 액터가 컴포넌트를 가지고 있는지 확인
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>((OtherActor->GetComponentByClass(USAttributeComponent::StaticClass())));
