@@ -45,6 +45,16 @@ ASCharacter::ASCharacter()
 	
 }
 
+void ASCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AttributeComp->OnHealthChanged.AddDynamic(this,&ASCharacter::OnHealthChanged);
+	
+}
+
+
+
 // Called when the game starts or when spawned
 void ASCharacter::BeginPlay()
 {
@@ -72,7 +82,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 
 	// input binding바인딩
-	// General
+	// How to EnhancedInput : BP에서 InputAction 생성 뒤 C++ 에서 해당 입력에 따른 함수를 바인딩 해주어야 함.
 	InputComp->BindAction(Input_Move, ETriggerEvent::Triggered,this,&ASCharacter::Move);
 	InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered,this,&ASCharacter::LookMouse);
 	
@@ -208,10 +218,11 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 		ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 		ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
 		ObjParams.AddObjectTypesToQuery(ECC_Pawn);
+
+		// 카메라와 충돌을 막기 위해 30.f 앞에서 발사
+		FVector TraceStart = CameraComp->GetComponentLocation() + GetControlRotation().Vector() * 30.f;
 	
-		FVector TraceStart = CameraComp->GetComponentLocation();
-	
-		FVector TraceEnd = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 5000);
+		FVector TraceEnd = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 50000);
 
 		// Hit 시 정보를 저장할 구조체
 		FHitResult Hit;
@@ -225,8 +236,9 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	
 		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
 		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
-	
-		DrawDebugLine(GetWorld(), HandLocation, Hit.Location, FColor::Red, false, 2.0f, 0, 1.0f);
+		
+		FVector DebugEnd = Hit.bBlockingHit ? Hit.Location : TraceEnd;
+		DrawDebugLine(GetWorld(), HandLocation, DebugEnd, FColor::Red, false, 2.0f, 0, 1.0f);
 		//UE_LOG(LogTemp, Warning, TEXT("Instigator: %s"), *GetInstigator()->GetName());
 	}
 }
@@ -255,6 +267,17 @@ void ASCharacter::Dash()
 {
 	PlayAnimMontage(AttackAnim);
 	GetWorldTimerManager().SetTimer(TimerHandle_Dash,this,&ASCharacter::Dash_TimeElasped,0.2f);
+}
+
+void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
+                                  float Delta)
+{
+	if (NewHealth <= 0.0f && Delta<0.0f)
+	{
+		// How to DisableInput
+		APlayerController* PC = Cast<APlayerController>(GetController());
+		DisableInput(PC);
+	}
 }
 
 void ASCharacter::Dash_TimeElasped()

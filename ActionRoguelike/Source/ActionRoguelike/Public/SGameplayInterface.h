@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "SGameplayInterface.generated.h"
-
+// How to Interface
 // This class does not need to be modified.
 // 메타 정보, 리플렉션용 클래스
 UINTERFACE(MinimalAPI)

@@ -49,6 +49,9 @@ protected:
 public:
 	// Sets default values for this character's properties
 	ASCharacter();
+
+protected:
+	virtual void PostInitializeComponents() override;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
@@ -114,6 +117,9 @@ protected:
 	void Dash();
 
 
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+	
 
 public:	
 	// Called every frame

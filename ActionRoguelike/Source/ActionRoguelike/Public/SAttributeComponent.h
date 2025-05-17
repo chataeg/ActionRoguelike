@@ -19,10 +19,8 @@ public:
 	// Sets default values for this component's properties
 	USAttributeComponent();
 
-
-
-
 protected:
+	
 	// How to UPROPERTY
 	// EditAnywhere - edit in BP editor and per-instance in level.
 	// VisibleAnywhere - 'read-only' in editor and level. (Use for Components)
@@ -39,10 +37,12 @@ protected:
 	float Health;
 
 	// HealthMax, Stamina, Strength
-	
-
 
 public:
+	
+	UFUNCTION(BlueprintCallable,Category = "Attributes")
+	bool IsAlive() const;
+	
 	// How to BlueprintAssignable : 델리게이트를 블루프린트에서 이벤트 바인딩 가능하게 해 줌.
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
