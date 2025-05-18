@@ -27,7 +27,9 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 			AttributeComp->ApplyHealthChange(-20.0f);
 
 			// 맞았으면 Destroy
-			Destroy();
+			// Destroy();
+
+			Explode();
 		}
 	}
 }

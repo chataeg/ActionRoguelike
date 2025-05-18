@@ -2,13 +2,12 @@
 
 
 #include "SProjectileBase.h"
-
-#include "SMagicProjectile.h"
+#include "Components/AudioComponent.h"
 #include "kismet/GameplayStatics.h"
-
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Sound/SoundCue.h"
 #include "UObject/FastReferenceCollector.h"
 
 // Sets default values
@@ -40,6 +39,8 @@ ASProjectileBase::ASProjectileBase()
 	// 속도가 액터가 바라보는 방향 기준으로 적용
 	MovementComp->bInitialVelocityInLocalSpace = true;
 
+	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
+	AudioComp->SetupAttachment(SphereComp);
 	
 
 	
@@ -53,7 +54,9 @@ void ASProjectileBase::Explode_Implementation()
 	 if (ensure(!IsEliminatingGarbage(EGCOptions::None)))
 	 {
 		 UGameplayStatics::SpawnEmitterAtLocation(this,ImpactVFX,GetActorLocation(),GetActorRotation());
-		
+	 	
+	 	 UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+	 	
 		 Destroy();
 	}
 
@@ -63,7 +66,7 @@ void ASProjectileBase::Explode_Implementation()
 void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-		//Explode();
+		Explode();
 }
 
 // How to PostInitialIzeComponents : 생성자 다음에 실행

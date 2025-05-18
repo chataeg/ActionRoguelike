@@ -272,7 +272,15 @@ void ASCharacter::Dash()
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
                                   float Delta)
 {
-	if (NewHealth <= 0.0f && Delta<0.0f)
+
+	if (Delta < 0.0f)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+		
+	}
+
+	
+	if (NewHealth <= 0.0f && Delta< 0.0f)
 	{
 		// How to DisableInput
 		APlayerController* PC = Cast<APlayerController>(GetController());

@@ -24,6 +24,7 @@ void ASTargetDummy::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 {
 	if (Delta < 0.0f)
 	{
+		// How to SetScalarParameterValueOnMaterials : Material 에 파라미터로 지정한 파라미터 이름에 값을 전달
 		MeshComp->SetScalarParameterValueOnMaterials("TimeToHit",GetWorld()->TimeSeconds);
 	}
 }
