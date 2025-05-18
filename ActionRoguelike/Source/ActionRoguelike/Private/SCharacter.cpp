@@ -11,8 +11,11 @@
 #include "SInteractionComponent.h"
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 
@@ -235,7 +238,15 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd-HandLocation).Rotator();
 	
 		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
+
+
+		
 		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
+		
+		UNiagaraFunctionLibrary::SpawnSystemAttached(CastingEffect,GetMesh(),TEXT("Muzzle_01"), FVector::ZeroVector, FRotator::ZeroRotator,
+			EAttachLocation::SnapToTarget, true, true, ENCPoolMethod::AutoRelease);
+		
+		
 		
 		FVector DebugEnd = Hit.bBlockingHit ? Hit.Location : TraceEnd;
 		DrawDebugLine(GetWorld(), HandLocation, DebugEnd, FColor::Red, false, 2.0f, 0, 1.0f);

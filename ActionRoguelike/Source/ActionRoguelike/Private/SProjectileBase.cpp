@@ -9,6 +9,17 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 #include "UObject/FastReferenceCollector.h"
+#include "Camera/CameraShakeBase.h"
+#include "ProfilingDebugging/CountersTrace.h"
+
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SProjectileBase)
+
+// NOTE: With SparseDataClass feature in use, some properties are replaced with "GetXXX()" which is generated automatically by UHT.
+// Example: DamageAmount becomes GetDamageAmount() without this function visible in our own header.
+
+TRACE_DECLARE_INT_COUNTER(COUNTER_GAME_ActiveProjectiles, TEXT("Game/ActiveProjectiles"));
+
 
 // Sets default values
 ASProjectileBase::ASProjectileBase()
@@ -56,7 +67,9 @@ void ASProjectileBase::Explode_Implementation()
 		 UGameplayStatics::SpawnEmitterAtLocation(this,ImpactVFX,GetActorLocation(),GetActorRotation());
 	 	
 	 	 UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
-	 	
+
+	 	UGameplayStatics::PlayWorldCameraShake(this, ImpactShake, GetActorLocation(), GetImpactShakeInnerRadius(), GetImpactShakeOuterRadius());
+
 		 Destroy();
 	}
 
@@ -81,12 +94,44 @@ void ASProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Can use to fine-tune the pre allocated actor pool by checking how many projectiles are alive during gameplay
+	TRACE_COUNTER_INCREMENT(COUNTER_GAME_ActiveProjectiles);
 }
 
+void ASProjectileBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	TRACE_COUNTER_DECREMENT(COUNTER_GAME_ActiveProjectiles);
+}
 // Called every frame
 void ASProjectileBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
+
+
+#if WITH_EDITOR
+// Only required to convert existing properties already stored in Blueprints into the 'new' system
+void ASProjectileBase::MoveDataToSparseClassDataStruct() const
+{
+	// make sure we don't overwrite the sparse data if it has been saved already
+	const UBlueprintGeneratedClass* BPClass = Cast<UBlueprintGeneratedClass>(GetClass());
+	if (BPClass == nullptr || BPClass->bIsSparseClassDataSerializable == true)
+	{
+		return;
+	}
+	
+	Super::MoveDataToSparseClassDataStruct();
+
+#if WITH_EDITORONLY_DATA
+	// Unreal Header Tool (UHT) will create GetMySparseClassData automatically.
+	FProjectileSparseData* SparseClassData = GetProjectileSparseData();
+
+	// Modify these lines to include all Sparse Class Data properties.
+	SparseClassData->ImpactShakeInnerRadius = ImpactShakeInnerRadius_DEPRECATED;
+	SparseClassData->ImpactShakeOuterRadius = ImpactShakeOuterRadius_DEPRECATED;
+#endif // WITH_EDITORONLY_DATA
+}
+#endif
 

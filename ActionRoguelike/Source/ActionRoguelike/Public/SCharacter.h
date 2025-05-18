@@ -14,6 +14,8 @@ class UInputComponent;
 class USInteractionComponent;
 class UAnimMontage;
 class USAttributeComponent;
+class UNiagaraSystem;
+
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
@@ -22,7 +24,7 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 
 protected:
 
-	// TSubclassof : 에디터에서 특정 클래스슬 지정 가능하게 만드는 타입. (포인터 아님)
+	// How to TSubclassof : 에디터에서 특정 클래스슬 지정 가능하게 만드는 타입. (포인터 아님)
 	UPROPERTY(EditAnywhere,  Category="Attack")
 	TSubclassOf<AActor> PrimaryAttackClass;
 
@@ -95,6 +97,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USAttributeComponent> AttributeComp;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TObjectPtr<UNiagaraSystem> CastingEffect;
 	
 	
 	// Called when the game starts or when spawned

@@ -11,8 +11,33 @@ class UProjectileMovementComponent;
 class UParticleSystemComponent;
 class UAudioComponent;
 class USoundCue;
+class UCameraShakeBase;
 
-UCLASS()
+
+/* SparseData to reduce memory footprint, see class description for URL*/
+USTRUCT(BlueprintType)
+struct FProjectileSparseData
+{
+	GENERATED_BODY()
+
+	FProjectileSparseData()
+	: ImpactShakeInnerRadius(0.f),
+	ImpactShakeOuterRadius(1500.f)
+	{ }
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Effects|Shake")
+	float ImpactShakeInnerRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects|Shake")
+	float ImpactShakeOuterRadius;
+};
+
+
+/*
+ * Example of Implementing SparseClassData, reduces memory by specifying a set of properties that won't change per-instance. More info: https://docs.unrealengine.com/en-US/sparse-class-data-in-unreal-engine/
+ */
+UCLASS(ABSTRACT, SparseClassDataTypes = ProjectileSparseData) // 'ABSTRACT' marks this class as incomplete, keeping this out of certain dropdowns windows like SpawnActor in Unreal Editor
+
 class ACTIONROGUELIKE_API ASProjectileBase : public AActor
 {
 	GENERATED_BODY()
@@ -41,6 +66,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category= "Effects")
 	TObjectPtr<USoundCue> ImpactSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects|Shake")
+	TSubclassOf<UCameraShakeBase> ImpactShake;
 	
 	// 'virtual' so we can override this in child-classes
 	UFUNCTION()
@@ -58,9 +86,27 @@ protected:
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+#if WITH_EDITORONLY_DATA
+	//~ These properties are moving out to the FMySparseClassData struct:
+private:
+	
+	UPROPERTY()
+	float ImpactShakeInnerRadius_DEPRECATED;
+
+	UPROPERTY()
+	float ImpactShakeOuterRadius_DEPRECATED;
+#endif
+
+#if WITH_EDITOR
+public:
+	// ~ This function transfers existing data into FMySparseClassData.
+	virtual void MoveDataToSparseClassDataStruct() const override;
+#endif
 };
