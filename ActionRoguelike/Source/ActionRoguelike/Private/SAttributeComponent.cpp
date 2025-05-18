@@ -10,7 +10,6 @@ USAttributeComponent::USAttributeComponent()
 	Health = 100;
 	HealthMax = 100;
 	
-	// ...
 }
 
 bool USAttributeComponent::IsAlive() const
