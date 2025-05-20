@@ -71,7 +71,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category= "Effects")
 	TObjectPtr<UNiagaraSystem> ImpactVFX;
 	
-
 	UPROPERTY(EditDefaultsOnly, Category= "Effects")
 	TObjectPtr<USoundCue> ImpactSound;
 
