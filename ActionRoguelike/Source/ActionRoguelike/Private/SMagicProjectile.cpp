@@ -11,6 +11,7 @@ ASMagicProjectile::ASMagicProjectile()
 {
 	SphereComp->SetSphereRadius(20.0f);
 	InitialLifeSpan = 10.f;
+	Damage = 1.0f;
 }
 
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -25,7 +26,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>((OtherActor->GetComponentByClass(USAttributeComponent::StaticClass())));
 		if (AttributeComp)
 		{
-			AttributeComp->ApplyHealthChange(-20.0f);
+			AttributeComp->ApplyHealthChange(-Damage);
 
 			// 맞았으면 Destroy
 			// Destroy();

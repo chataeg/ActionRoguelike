@@ -55,7 +55,8 @@ ASProjectileBase::ASProjectileBase()
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 	AudioComp->SetupAttachment(SphereComp);
-	
+
+	Damage = 0.0f;
 
 	
 }
