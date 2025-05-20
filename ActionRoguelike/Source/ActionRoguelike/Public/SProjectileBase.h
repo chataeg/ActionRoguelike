@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraEmitterHandle.h"
 #include "GameFramework/Actor.h"
 #include "SProjectileBase.generated.h"
 
@@ -15,6 +16,8 @@ class UCameraShakeBase;
 
 
 /* SparseData to reduce memory footprint, see class description for URL*/
+// How to SparseClassData : 상수화가 될 수 있는 데이터를 단일 공유 구조체 인스턴스로 전송해서 사본 하나만 유지. (메모리 절약)
+// https://dev.epicgames.com/documentation/ko-kr/unreal-engine/sparse-class-data-in-unreal-engine
 USTRUCT(BlueprintType)
 struct FProjectileSparseData
 {
@@ -36,6 +39,7 @@ struct FProjectileSparseData
 /*
  * Example of Implementing SparseClassData, reduces memory by specifying a set of properties that won't change per-instance. More info: https://docs.unrealengine.com/en-US/sparse-class-data-in-unreal-engine/
  */
+// How to ABSTRACT : 클래스를 추상 클래스로 만듦 (객체가 인스턴스화 되지 않는다.)
 UCLASS(ABSTRACT, SparseClassDataTypes = ProjectileSparseData) // 'ABSTRACT' marks this class as incomplete, keeping this out of certain dropdowns windows like SpawnActor in Unreal Editor
 
 class ACTIONROGUELIKE_API ASProjectileBase : public AActor
@@ -60,9 +64,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UAudioComponent> AudioComp;
 
+	// Deprecated particleSystem
+	// UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	// TObjectPtr<UParticleSystem> ImpactVFX;
+
+	UPROPERTY(EditDefaultsOnly, Category= "Effects")
+	TObjectPtr<UNiagaraSystem> ImpactVFX;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Effects")
-	TObjectPtr<UParticleSystem> ImpactVFX;
 
 	UPROPERTY(EditDefaultsOnly, Category= "Effects")
 	TObjectPtr<USoundCue> ImpactSound;
@@ -93,20 +101,24 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-#if WITH_EDITORONLY_DATA
-	//~ These properties are moving out to the FMySparseClassData struct:
-private:
-	
-	UPROPERTY()
-	float ImpactShakeInnerRadius_DEPRECATED;
 
-	UPROPERTY()
-	float ImpactShakeOuterRadius_DEPRECATED;
-#endif
 
-#if WITH_EDITOR
-public:
-	// ~ This function transfers existing data into FMySparseClassData.
-	virtual void MoveDataToSparseClassDataStruct() const override;
-#endif
+
+// ### Deprecated ####
+// #if WITH_EDITORONLY_DATA
+// 	//~ These properties are moving out to the FMySparseClassData struct:
+// private:
+// 	
+// 	UPROPERTY()
+// 	float ImpactShakeInnerRadius_DEPRECATED;
+//
+// 	UPROPERTY()
+// 	float ImpactShakeOuterRadius_DEPRECATED;
+// #endif
+//
+// #if WITH_EDITOR
+// public:
+// 	// ~ This function transfers existing data into FMySparseClassData.
+// 	virtual void MoveDataToSparseClassDataStruct() const override;
+// #endif
 };

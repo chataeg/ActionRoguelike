@@ -17,7 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	ASPowerupActor();
 
-
+	
 	FTimerHandle TimerHandle_PowerupPotion;
 	
 protected:

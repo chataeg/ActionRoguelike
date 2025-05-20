@@ -13,9 +13,6 @@ ASPowerup_HealthPotion::ASPowerup_HealthPotion()
 void ASPowerup_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 {
 	Super::Interact_Implementation(InstigatorPawn);
-
-	UE_LOG(LogTemp,Warning,TEXT("HealthPotion"));
-
 	
 	if (USAttributeComponent* AttributeComp = Cast<USAttributeComponent>((InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()))))
 	{

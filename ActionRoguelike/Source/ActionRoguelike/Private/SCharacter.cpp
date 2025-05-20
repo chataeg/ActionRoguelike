@@ -9,13 +9,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
-#include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
-#include "NiagaraComponent.h"
 
 // Sets default values
 
@@ -163,6 +158,9 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	// ensure 은 한번만 트리거된다. 항상 하려면 ensureAlways 사용 shpping에서 ensure 는 사라진다.
 	// check 는 잘 안쓴다. 트리거되면 계속 진행이 안 되고 abort 해서.
 	
+#pragma region LineTrace
+	// How to LineTrace
+
 	// if (ensure(ClassToSpawn))
 	// {
 	// 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
@@ -196,8 +194,9 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	// 	}
 	// 	DrawDebugLine(GetWorld(), HandLocation, Hit.Location, FColor::Red, false, 2.0f, 0, 1.0f);
 	// }
-
-	// How to LineTrace
+#pragma endregion
+	
+	
 	// How to Sweep
 	if (ensure(ClassToSpawn))
 	{
@@ -242,6 +241,19 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 
 		
 		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
+
+		// How to Niagara : PublicDependencyModuleNames 에 Niagara 추가 필요. 기본적으로 cascade particle system 의 최신 버젼이라 생각중.
+		// 	 UNiagaraFunctionLibrary::SpawnSystemAttached(
+		// 	CastingEffect,                    // 1. 이펙트 에셋
+		// 	GetMesh(),                        // 2. 붙일 대상 컴포넌트
+		// 	TEXT("Muzzle_01"),                // 3. 붙일 소켓 이름
+		// 	FVector::ZeroVector,              // 4. 위치 오프셋
+		// 	FRotator::ZeroRotator,            // 5. 회전 오프셋
+		// 	EAttachLocation::SnapToTarget,    // 6. 위치 기준 타입
+		// 	true,                             // 7. 자동 파괴 여부
+		// 	true,                             // 8. 자동 활성화 여부
+		// 	ENCPoolMethod::AutoRelease        // 9. 풀링 방식
+		// );
 		
 		UNiagaraFunctionLibrary::SpawnSystemAttached(CastingEffect,GetMesh(),TEXT("Muzzle_01"), FVector::ZeroVector, FRotator::ZeroRotator,
 			EAttachLocation::SnapToTarget, true, true, ENCPoolMethod::AutoRelease);

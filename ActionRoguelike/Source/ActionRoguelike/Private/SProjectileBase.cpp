@@ -2,6 +2,9 @@
 
 
 #include "SProjectileBase.h"
+
+#include "LocalizationDescriptor.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -64,11 +67,14 @@ void ASProjectileBase::Explode_Implementation()
 
 	 if (ensure(!IsEliminatingGarbage(EGCOptions::None)))
 	 {
-		 UGameplayStatics::SpawnEmitterAtLocation(this,ImpactVFX,GetActorLocation(),GetActorRotation());
-	 	
+	 	// Deprecated
+	 	//UGameplayStatics::SpawnEmitterAtLocation(this,ImpactVFX,GetActorLocation(),GetActorRotation());
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactVFX,GetActorLocation(), GetActorRotation(),FVector(1.0f),true,true,ENCPoolMethod::AutoRelease,true);
+		 	
 	 	 UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
 
-	 	UGameplayStatics::PlayWorldCameraShake(this, ImpactShake, GetActorLocation(), GetImpactShakeInnerRadius(), GetImpactShakeOuterRadius());
+	 	// How to PlayWorldCameraShake : InnerRadius -> 이 안에 있으면 흔들림 최대 적용 / OuterRadius -> 흔들림 적용 없음.
+	 	 UGameplayStatics::PlayWorldCameraShake(this, ImpactShake, GetActorLocation(), GetImpactShakeInnerRadius(), GetImpactShakeOuterRadius());
 
 		 Destroy();
 	}
@@ -110,28 +116,28 @@ void ASProjectileBase::Tick(float DeltaTime)
 
 }
 
-
-#if WITH_EDITOR
-// Only required to convert existing properties already stored in Blueprints into the 'new' system
-void ASProjectileBase::MoveDataToSparseClassDataStruct() const
-{
-	// make sure we don't overwrite the sparse data if it has been saved already
-	const UBlueprintGeneratedClass* BPClass = Cast<UBlueprintGeneratedClass>(GetClass());
-	if (BPClass == nullptr || BPClass->bIsSparseClassDataSerializable == true)
-	{
-		return;
-	}
-	
-	Super::MoveDataToSparseClassDataStruct();
-
-#if WITH_EDITORONLY_DATA
-	// Unreal Header Tool (UHT) will create GetMySparseClassData automatically.
-	FProjectileSparseData* SparseClassData = GetProjectileSparseData();
-
-	// Modify these lines to include all Sparse Class Data properties.
-	SparseClassData->ImpactShakeInnerRadius = ImpactShakeInnerRadius_DEPRECATED;
-	SparseClassData->ImpactShakeOuterRadius = ImpactShakeOuterRadius_DEPRECATED;
-#endif // WITH_EDITORONLY_DATA
-}
-#endif
+//
+// #if WITH_EDITOR
+// // Only required to convert existing properties already stored in Blueprints into the 'new' system
+// void ASProjectileBase::MoveDataToSparseClassDataStruct() const
+// {
+// 	// make sure we don't overwrite the sparse data if it has been saved already
+// 	const UBlueprintGeneratedClass* BPClass = Cast<UBlueprintGeneratedClass>(GetClass());
+// 	if (BPClass == nullptr || BPClass->bIsSparseClassDataSerializable == true)
+// 	{
+// 		return;
+// 	}
+// 	
+// 	Super::MoveDataToSparseClassDataStruct();
+//
+// #if WITH_EDITORONLY_DATA
+// 	// Unreal Header Tool (UHT) will create GetMySparseClassData automatically.
+// 	FProjectileSparseData* SparseClassData = GetProjectileSparseData();
+//
+// 	// Modify these lines to include all Sparse Class Data properties.
+// 	SparseClassData->ImpactShakeInnerRadius = ImpactShakeInnerRadius_DEPRECATED;
+// 	SparseClassData->ImpactShakeOuterRadius = ImpactShakeOuterRadius_DEPRECATED;
+// #endif // WITH_EDITORONLY_DATA
+// }
+// #endif
 

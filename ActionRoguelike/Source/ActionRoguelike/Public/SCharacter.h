@@ -101,7 +101,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TObjectPtr<UNiagaraSystem> CastingEffect;
 	
-	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

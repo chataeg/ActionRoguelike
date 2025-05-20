@@ -3,6 +3,7 @@
 
 #include "SDashProjectile.h"
 
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -34,8 +35,8 @@ void ASDashProjectile::Explode_Implementation()
 {
 	// Clear timer if the Explode was already called through another source like OnActorHit
 	GetWorldTimerManager().ClearTimer(TimerHandle_DelayedDetonate);
-
-	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
+	
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactVFX,GetActorLocation(), GetActorRotation(),FVector(1.0f),true,true,ENCPoolMethod::AutoRelease,true);
 
 	//UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
 
@@ -69,7 +70,7 @@ void ASDashProjectile::TeleportInstigator()
 	// 지면 찾기
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_WorldStatic, Params))
 	{
-		// 지면 위 50cm 지점으로 텔레포트
+		// 지면 위 100cm 지점으로 텔레포트
 		FVector TeleportLocation = HitResult.ImpactPoint + FVector(0, 0, 100.0f);
 
 		bool bSuccess = ActorToTeleport->TeleportTo(TeleportLocation, ActorToTeleport->GetActorRotation(), false, false);
