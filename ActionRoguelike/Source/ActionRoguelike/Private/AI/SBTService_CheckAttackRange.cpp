@@ -10,9 +10,10 @@
 void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-
+	// TickNode는 매 프레임마다 호출 되는 것이 아님.
+	
 	// Check Distacne between AI pawn and Target Actor
-
+	
 	UBlackboardComponent* BlackBoardComp = OwnerComp.GetBlackboardComponent();
 	if (ensure(BlackBoardComp))
 	{
@@ -34,6 +35,7 @@ void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 					
 					if (bWithinRange)
 					{
+					    // How to LineOfSightTo : 컨트롤러 내장 함수, 액터에 대해 시야가 있는지 판별해준다.
 						bHasLOS = MyController->LineOfSightTo(TargetActor);
 
 					}
