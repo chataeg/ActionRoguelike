@@ -62,7 +62,6 @@ void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 	
 	RadialForce->FireImpulse();
 
-	// How to debug
 	UE_LOG(LogTemp,Log,TEXT("OnActorHit in Explosive Barrel"));
 
 	UE_LOG(LogTemp, Warning, TEXT("OtherActor : %s, at game time : %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);

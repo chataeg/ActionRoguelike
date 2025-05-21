@@ -13,7 +13,7 @@ void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	// TickNode는 매 프레임마다 호출 되는 것이 아님.
 
 
-	// How to Service : 
+	// How to Service : 조건을 검사하여 행동을 분기함.
 	// Check Distacne between AI pawn and Target Actor
 	
 	UBlackboardComponent* BlackBoardComp = OwnerComp.GetBlackboardComponent();

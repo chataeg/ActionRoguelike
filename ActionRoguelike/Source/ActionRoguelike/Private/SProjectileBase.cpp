@@ -89,7 +89,7 @@ void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Oth
 		Explode();
 }
 
-// How to PostInitialIzeComponents : 생성자 다음에 실행
+// How to PostInitialIzeComponents : 생성자 다음에 실행, 안전하게 델리게이트 바인딩 하는데 사용
 void ASProjectileBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();

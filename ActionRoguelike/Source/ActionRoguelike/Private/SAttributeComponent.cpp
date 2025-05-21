@@ -25,7 +25,7 @@ bool USAttributeComponent::ApplyHealthChange(float Delta)
 
 	//float ActualDelta = NewHealth - OldHealth;
 	
-	// How to Broadcast
+	// How to Broadcast : 
 	OnHealthChanged.Broadcast(nullptr, this, NewHealth,Delta);
 	Health = NewHealth;
 	

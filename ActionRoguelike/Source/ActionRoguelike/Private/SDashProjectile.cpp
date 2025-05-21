@@ -24,7 +24,7 @@ void ASDashProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// How to Timer
+	// How to Timer : TimerHandle 을 사용하여 타이머를 등록.
 	GetWorldTimerManager().SetTimer(TimerHandle_DelayedDetonate, this, &ASDashProjectile::Explode, DetonateDelay);
 
 	// 움직이고 있을 때 시전자를 무시 (생성자에서 호출하면 시전자 설정이 안된다.
