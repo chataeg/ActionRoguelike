@@ -7,6 +7,8 @@
 #include "InputAction.h"
 #include "SCharacter.generated.h"
 
+class UAIPerceptionStimuliSourceComponent;
+class UAIPerceptionComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputMappingContext;
@@ -97,6 +99,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USAttributeComponent> AttributeComp;
+
+
+	// How to UAIPerceptionStimuliSourceComponent
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UAIPerceptionStimuliSourceComponent> PerceptionStimuliComp;
+	
+	
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TObjectPtr<UNiagaraSystem> CastingEffect;

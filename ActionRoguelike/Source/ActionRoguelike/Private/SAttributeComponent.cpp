@@ -23,13 +23,13 @@ bool USAttributeComponent::ApplyHealthChange(float Delta)
 	float OldHealth = Health;
 	float NewHealth = FMath::Clamp(OldHealth + Delta, 0.0f, HealthMax);
 
-	//float ActualDelta = NewHealth - OldHealth;
+	float ActualDelta = NewHealth - OldHealth;
 	
 	// How to Broadcast : 
-	OnHealthChanged.Broadcast(nullptr, this, NewHealth,Delta);
+	OnHealthChanged.Broadcast(nullptr, this, NewHealth,ActualDelta);
 	Health = NewHealth;
 	
-	return true;
+	return ActualDelta != 0;
 }
 
 float USAttributeComponent::GetHealth() const

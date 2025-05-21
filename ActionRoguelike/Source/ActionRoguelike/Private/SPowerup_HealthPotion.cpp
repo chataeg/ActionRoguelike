@@ -7,21 +7,28 @@
 
 ASPowerup_HealthPotion::ASPowerup_HealthPotion()
 {
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 }
 
 void ASPowerup_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 {
 	Super::Interact_Implementation(InstigatorPawn);
+
+	if (!ensure(InstigatorPawn))
+	{
+		return;
+	}
 	
 	if (USAttributeComponent* AttributeComp = Cast<USAttributeComponent>((InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()))))
 	{
-		if (!bIsActive || AttributeComp->GetHealth() > 0.0f || AttributeComp->GetHealth() != AttributeComp->GetHealthMax())
+		if (ensure(AttributeComp))
 		{
-			AttributeComp->ApplyHealthChange(AttributeComp->GetHealthMax());
-			HideAndCooldownPowerUp();
+			if (!bIsActive || AttributeComp->GetHealth() > 0.0f || AttributeComp->GetHealth() != AttributeComp->GetHealthMax())
+			{
+				AttributeComp->ApplyHealthChange(AttributeComp->GetHealthMax());
+				HideAndCooldownPowerUp();
+			}
 		}
 	}
-	
-	
 }

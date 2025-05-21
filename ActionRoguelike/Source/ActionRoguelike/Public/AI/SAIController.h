@@ -10,16 +10,26 @@
  * 
  */
 class UBehaviorTree;
+class UAIPerceptionComponent;
+
 
 UCLASS()
 class ACTIONROGUELIKE_API ASAIController : public AAIController
 {
 	GENERATED_BODY()
 
+	ASAIController();
+	
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	// How to AIPerceptionComponent : Pawn 과 분리, 유연성을 위해 AIController 에 선언한다.
+	// 25.05.21 현재 BP 에 로직이 있음.
+	// https://dev.epicgames.com/documentation/ko-kr/unreal-engine/ai-perception-in-unreal-engine
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UAIPerceptionComponent> AIPerceptionComp;
 
 	
 	virtual void BeginPlay() override;

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
+// Deprecated 
 class UPawnSensingComponent;
 
 UCLASS()
@@ -21,12 +22,10 @@ protected:
 
 	virtual void PostInitializeComponents() override;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	TObjectPtr<UPawnSensingComponent> PawnSensingComp;
 
-	// How to FSeePawnDelegate 
-	UFUNCTION()
-	void OnPawnSeen(APawn* Pawn);
+	// // How to FSeePawnDelegate : Deprecated
+	// UFUNCTION()
+	// void OnPawnSeen(APawn* Pawn);
 
 	
 

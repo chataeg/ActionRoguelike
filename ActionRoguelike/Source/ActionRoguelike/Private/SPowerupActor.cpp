@@ -13,30 +13,28 @@ ASPowerupActor::ASPowerupActor()
 	RootComponent = MeshComp;
 
 	RespawnTime = 10.f;
-	bIsActive = true;
 	
 
 }
 
 void ASPowerupActor::HideAndCooldownPowerUp()
 {
-	SetActorHiddenInGame(true);
-	SetActorEnableCollision(false);
-	bIsActive = false;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_PowerupPotion,this,&ASPowerupActor::ShowAndCoolEndPowerUp, RespawnTime);
+	SetPowerupState(false);
 	
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_PowerupPotion,this,&ASPowerupActor::ShowPowerUp, RespawnTime);
 }
 
-void ASPowerupActor::ShowAndCoolEndPowerUp()
+
+void ASPowerupActor::ShowPowerUp()
 {
-	SetActorHiddenInGame(false);
+	SetPowerupState(true);
+}
+
+void ASPowerupActor::SetPowerupState(bool bNewIsActive)
+{
 	SetActorEnableCollision(true);
-	bIsActive = true;
-}
-
-bool ASPowerupActor::IsActive() const
-{
-	return bIsActive;
+	// How to PropagateToChildren : 부모에서 자식까지 쭉 내려가면서 불리언을 바꿔줄 수 있다.
+	RootComponent->SetVisibility(bNewIsActive, true);
 }
 
 

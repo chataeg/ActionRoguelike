@@ -11,6 +11,7 @@
 #include "SInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
 
 // Sets default values
 
@@ -40,6 +41,9 @@ ASCharacter::ASCharacter()
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>(TEXT("InteractionComp"));
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
+
+	PerceptionStimuliComp = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("PerceptionStimuliComp"));
+	
 	
 }
 

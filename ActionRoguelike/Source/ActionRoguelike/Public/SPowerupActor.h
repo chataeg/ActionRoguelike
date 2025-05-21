@@ -34,10 +34,11 @@ protected:
 
 	void HideAndCooldownPowerUp();
 
-	void ShowAndCoolEndPowerUp();
-	
-public:
+	UFUNCTION()
+	void ShowPowerUp();
 
-	bool IsActive() const;
+	void SetPowerupState(bool bNewIsActive);
+	
+	
 
 };

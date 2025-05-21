@@ -5,6 +5,14 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/AIPerceptionComponent.h"
+
+ASAIController::ASAIController()
+{
+	
+	AIPerceptionComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComp"));
+	
+}
 
 void ASAIController::BeginPlay()
 {
@@ -14,6 +22,9 @@ void ASAIController::BeginPlay()
 	if (ensureMsgf(BehaviorTree, TEXT("Behavior Tree is nullptr! Please assign BehaviorTree in your AI Controller.")))
 	{
 		RunBehaviorTree(BehaviorTree);
+		
+		// APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+		// GetBlackboardComponent()->SetValueAsObject("TargetActor",MyPawn);
 	}
 	
 	// APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this, 0);
@@ -24,10 +35,5 @@ void ASAIController::BeginPlay()
 	// 	
 	// 	GetBlackboardComponent()->SetValueAsObject("TargetActor", MyPawn);
 	// }
-
-	
-
-	
-	
 	
 }
