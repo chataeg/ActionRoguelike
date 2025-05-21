@@ -22,7 +22,7 @@ public:
 	
 protected:
 
-	// How to bool : bool 로 선언하면 내부에선 실제로 uint8 기반으로 처리된다.
+	// How to bool : bool 로 선언하면 내부에선 실제로 uint8 기반으로 처리된다. 아니면 아래처럼 사용해도 됌.
 	UPROPERTY(VisibleAnywhere , Category = "Attributes")
 	uint8 bIsActive : 1;
 

@@ -7,7 +7,7 @@
 
 ASPowerup_HealthPotion::ASPowerup_HealthPotion()
 {
-	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 }
 

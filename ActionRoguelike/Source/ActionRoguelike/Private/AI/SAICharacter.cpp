@@ -4,7 +4,10 @@
 #include "AI/SAICharacter.h"
 
 #include "AIController.h"
+#include "SAttributeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -14,7 +17,8 @@ ASAICharacter::ASAICharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	 
+	 AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
+	
 
 }
 
@@ -25,8 +29,35 @@ void ASAICharacter::PostInitializeComponents()
 
 	// Migrated to AIPerceptionComponent
 	//AIPerceptionComp->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
+	AttributeComp->OnHealthChanged.AddDynamic(this,&ASAICharacter::OnHealthChanged);
 	
 	
+}
+
+void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
+	float Delta)
+{
+	
+	if (NewHealth <= 0.0f && Delta< 0.0f)
+	{
+		// How to Stop AI , AI DEAD
+
+		// AAIController* AIC = Cast<AAIController>(GetController());
+		//
+		// if (AIC)
+		// {
+		// 	AIC->StopMovement();
+		// 	AIC->UnPossess();
+		// 	
+		// 	AIC->GetAIPerceptionComponent()->Deactivate();
+		// 	
+		// }
+		//
+		// GetCharacterMovement()->DisableMovement();
+		// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//
+		// SetActorTickEnabled(false);
+	}
 }
 
 // void ASAICharacter::OnPawnSeen(APawn* Pawn)

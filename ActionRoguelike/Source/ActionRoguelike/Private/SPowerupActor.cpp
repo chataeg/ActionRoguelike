@@ -10,8 +10,9 @@ ASPowerupActor::ASPowerupActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
-	RootComponent = MeshComp;
-
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MeshComp->SetupAttachment(RootComponent);
+	
 	RespawnTime = 10.f;
 	
 

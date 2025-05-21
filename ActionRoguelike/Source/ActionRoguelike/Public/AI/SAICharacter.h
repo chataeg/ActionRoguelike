@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SAttributeComponent.h"
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
+class USAttributeComponent;
 // Deprecated 
 class UPawnSensingComponent;
 
@@ -21,6 +23,15 @@ public:
 protected:
 
 	virtual void PostInitializeComponents() override;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Components")
+	TObjectPtr<USAttributeComponent> AttributeComp;
+
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+	
+
+	
 	
 
 	// // How to FSeePawnDelegate : Deprecated
