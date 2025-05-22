@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
 #include "InputAction.h"
 #include "SCharacter.generated.h"
@@ -20,7 +21,7 @@ class UNiagaraSystem;
 
 
 UCLASS()
-class ACTIONROGUELIKE_API ASCharacter : public ACharacter
+class ACTIONROGUELIKE_API ASCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 

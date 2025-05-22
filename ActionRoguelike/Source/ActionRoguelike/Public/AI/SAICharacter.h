@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "SAttributeComponent.h"
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
@@ -12,7 +13,7 @@ class USAttributeComponent;
 class UPawnSensingComponent;
 
 UCLASS()
-class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
+class ACTIONROGUELIKE_API ASAICharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 

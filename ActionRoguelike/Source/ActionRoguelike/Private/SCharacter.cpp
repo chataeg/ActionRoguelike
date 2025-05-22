@@ -61,7 +61,8 @@ void ASCharacter::PostInitializeComponents()
 void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	SetGenericTeamId(FGenericTeamId(0));
 }
 
 // Called to bind functionality to input
