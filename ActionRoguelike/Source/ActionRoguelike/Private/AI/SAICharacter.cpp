@@ -23,6 +23,10 @@ ASAICharacter::ASAICharacter()
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	TeamId = TEAM_ID_BOTS;
+	
+	//TimeToHitParamName = "TimeToHit";
+	HitFlash_CustomPrimitiveIndex = 0;
+	
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -55,6 +59,7 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 	if (Delta < 0.0f)
 	{
 
+		GetMesh()->SetCustomPrimitiveDataFloat(HitFlash_CustomPrimitiveIndex, GetWorld()->TimeSeconds);
 		
 		if (NewHealth <= 0.0f)
 		{

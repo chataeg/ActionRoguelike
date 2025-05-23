@@ -22,6 +22,11 @@ public:
 	ASAICharacter();
 
 protected:
+	
+	/* Index must match the CustomPrimitiveData index used in the Overlay material */
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	int32 HitFlash_CustomPrimitiveIndex;
+	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USAttributeComponent> AttributeComp;
 
