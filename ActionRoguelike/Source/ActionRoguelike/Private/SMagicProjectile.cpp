@@ -30,7 +30,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 			// How to IsA : 특정 클래스인지 확인할 수 있음
 			if (OtherActor->IsA(ASCharacter::StaticClass()) )
 			{
-				AttributeComp->ApplyHealthChange(GetInstigator(),0);
+				AttributeComp->ApplyHealthChange(GetInstigator(),-1.0f);
 			}
 			else
 			{
