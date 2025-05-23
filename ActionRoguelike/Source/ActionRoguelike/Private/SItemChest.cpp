@@ -4,10 +4,8 @@
 #include "SItemChest.h"
 #include "Components/StaticMeshComponent.h"
 
-// Sets default values
 ASItemChest::ASItemChest()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
@@ -23,27 +21,6 @@ ASItemChest::ASItemChest()
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	// BP 에서 오버라이드 하였기 때문에 동작하지 않는다.
-
-	
 	UE_LOG(LogTemp,Log,TEXT("Interact_Implementation"));
-
 	LidMesh->SetRelativeRotation(FRotator(TargetPitch,0,0));
-
-
-	
 }
-
-// Called when the game starts or when spawned
-void ASItemChest::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ASItemChest::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

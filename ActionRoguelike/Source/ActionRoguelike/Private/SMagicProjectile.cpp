@@ -4,6 +4,7 @@
 #include "SMagicProjectile.h"
 
 #include "SAttributeComponent.h"
+#include "SCharacter.h"
 #include "Components/SphereComponent.h"
 
 // Sets default values
@@ -11,7 +12,7 @@ ASMagicProjectile::ASMagicProjectile()
 {
 	SphereComp->SetSphereRadius(20.0f);
 	InitialLifeSpan = 10.f;
-	Damage = 20.0f;
+	Damage = 50.0f;
 }
 
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -26,8 +27,16 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>((OtherActor->GetComponentByClass(USAttributeComponent::StaticClass())));
 		if (AttributeComp)
 		{
-			AttributeComp->ApplyHealthChange(-Damage);
-
+			// How to IsA : 특정 클래스인지 확인할 수 있음
+			if (OtherActor->IsA(ASCharacter::StaticClass()) )
+			{
+				AttributeComp->ApplyHealthChange(0);
+			}
+			else
+			{
+				AttributeComp->ApplyHealthChange(-Damage);
+			}
+				
 			// 맞았으면 Destroy
 			// Destroy();
 

@@ -25,6 +25,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
+	// How to AI : 블로그에 따로 정리한 글을 참고 https://buly.kr/1xyd6K2
 	// How to AIPerceptionComponent : Pawn 과 분리, 유연성을 위해 AIController 에 선언한다.
 	// 25.05.21 현재 BP 에 로직이 있음.
 	// https://dev.epicgames.com/documentation/ko-kr/unreal-engine/ai-perception-in-unreal-engine

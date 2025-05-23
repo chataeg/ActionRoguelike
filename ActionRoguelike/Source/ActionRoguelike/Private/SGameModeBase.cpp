@@ -11,13 +11,11 @@
 ASGameModeBase::ASGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
-	
 }
 
 void ASGameModeBase::StartPlay()
 {
 	Super::StartPlay();
-
 	// Continuous timer to spawn in more bots.
 	// Actual amount of bots and whether it`s allowed to spawn determined by spawn logic later in the chain . . .
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ASGameModeBase::SpawnBotTimerElasped, SpawnTimerInterval, true);
@@ -26,6 +24,37 @@ void ASGameModeBase::StartPlay()
 
 void ASGameModeBase::SpawnBotTimerElasped()
 {
+	int32 NrOfAliveBots = 0;
+	// How to Iterator : 월드 객체를 아래 방식으로 Iterate 가능
+	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
+	{
+		ASAICharacter* Bot = *It;
+
+		USAttributeComponent* AttributeComponent = Cast<USAttributeComponent> (Bot->GetComponentByClass(USAttributeComponent::StaticClass()));
+		if (ensure(AttributeComponent) && AttributeComponent->IsAlive())
+		{
+			NrOfAliveBots++;
+		}
+	}
+
+	UE_LOG(LogTemp, Log,TEXT("Found %i alive bots "), NrOfAliveBots);
+
+	
+
+	float MaxBotCount = 10.f;
+	
+	if (DifficultyCurve)
+	{
+		MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+	}
+
+	if (NrOfAliveBots >= MaxBotCount)
+	{
+		
+		UE_LOG(LogTemp, Log,TEXT("At Maximum boy capacity. Skipping bot spawn"));
+		return;
+	}
+	
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
 	if (ensure(QueryInstance))
 	{
@@ -42,36 +71,10 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 		UE_LOG(LogTemp, Warning, TEXT("Spawn bot EQS Query Failed!"));
 		return;
 	}
-
-	int32 NrOfAliveBots = 0;
-	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
-	{
-		ASAICharacter* Bot = *It;
-
-		USAttributeComponent* AttributeComponent = Cast<USAttributeComponent> (Bot->GetComponentByClass(USAttributeComponent::StaticClass()));
-		if (AttributeComponent && AttributeComponent->IsAlive())
-		{
-			NrOfAliveBots++;
-		}
-	}
-
-	float MaxBotCount = 10.f;
-	
-	if (DifficultyCurve)
-	{
-		MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
-	}
-
-	if (NrOfAliveBots >= MaxBotCount)
-	{
-		return;
-	}
-	
 	
 	// How to TArray : https://dev.epicgames.com/documentation/ko-kr/unreal-engine/array-containers-in-unreal-engine
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
 	
-
 	if (Locations.IsValidIndex(0))
 	{
 		
@@ -79,7 +82,4 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 		DrawDebugSphere(GetWorld(), Locations[0], 100.0f, 12, FColor::Red, false, 30.0f);
 		//GetWorld()->SpawnActor<AActor>(MinionClass, FVector(0.0f,0.0f,100.f), FRotator::ZeroRotator);
 	}
-
-
-	
 }

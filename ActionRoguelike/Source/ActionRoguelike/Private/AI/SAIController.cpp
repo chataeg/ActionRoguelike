@@ -22,7 +22,7 @@ ETeamAttitude::Type ASAIController::GetTeamAttitudeTowards(const AActor& Other) 
 	const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(&Other);
 	if (TeamAgent)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("Other %s : %d  / self %s :  %d"),*Other.GetName(),TeamAgent->GetGenericTeamId().GetId(),*GetName(),GetGenericTeamId().GetId());
+		//UE_LOG(LogTemp,Warning,TEXT("Other %s : %d  / self %s :  %d"),*Other.GetName(),TeamAgent->GetGenericTeamId().GetId(),*GetName(),GetGenericTeamId().GetId());
 		return (TeamAgent->GetGenericTeamId() == GetGenericTeamId()) ? ETeamAttitude::Friendly : ETeamAttitude::Hostile;
 	}
 	return ETeamAttitude::Neutral;

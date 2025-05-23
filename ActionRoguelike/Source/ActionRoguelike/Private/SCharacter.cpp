@@ -165,7 +165,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 {
 
 	// How to Debug
-	// How to ensure : ensure 은 한번만 트리거된다. 항상 하려면 ensureAlways 사용 shpping에서 ensure 는 사라진다.
+	// How to ensure : ensure 은 한번만 트리거된다. (콜스택 생성해줌) 항상 하려면 ensureAlways 사용 shpping에서 ensure 는 사라진다.
 	// How to check : check 는 잘 안쓴다. 트리거되면 계속 진행이 안 되고 abort 해서.
 	
 #pragma region LineTrace
