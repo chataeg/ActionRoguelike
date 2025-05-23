@@ -5,6 +5,7 @@
 
 #include "AIController.h"
 #include "SAttributeComponent.h"
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -19,7 +20,7 @@ ASAICharacter::ASAICharacter()
 
 	 AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	
-
+	TeamId = TEAM_ID_BOTS;
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -58,6 +59,11 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 		//
 		// SetActorTickEnabled(false);
 	}
+}
+
+FGenericTeamId ASAICharacter::GetGenericTeamId() const
+{
+	return TeamId;
 }
 
 // void ASAICharacter::OnPawnSeen(APawn* Pawn)

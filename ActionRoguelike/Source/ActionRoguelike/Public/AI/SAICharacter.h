@@ -30,8 +30,12 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	FGenericTeamId TeamId;
 	
 
+public: 
+	virtual FGenericTeamId GetGenericTeamId() const override;
 	
 	
 

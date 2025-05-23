@@ -32,7 +32,18 @@ protected:
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComp;
 
 	
+	FGenericTeamId TeamId;
+
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+
+	
 	virtual void BeginPlay() override;
 
+	virtual void OnPossess(APawn* InPawn) override;
+
+	virtual void PostInitializeComponents() override;
+
+public: 
+	virtual FGenericTeamId GetGenericTeamId() const override;
 	
 };

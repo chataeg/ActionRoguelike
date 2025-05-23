@@ -59,6 +59,9 @@ protected:
 	virtual void PostInitializeComponents() override;
 	
 protected:
+	FGenericTeamId TeamId;
+	
+	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMapping;
 
@@ -141,5 +144,5 @@ public:
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual FGenericTeamId GetGenericTeamId() const override;
 };

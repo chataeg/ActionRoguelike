@@ -11,6 +11,7 @@
 #include "SInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 
 // Sets default values
@@ -19,8 +20,7 @@ ASCharacter::ASCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-
+	
 	// 캐릭터 / 캐릭터 메쉬가 이동 방향으로 자동 회전
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	// 컨트롤러 회전을 캐릭터가 따라가지 않게 함 (카메라와 입력 분리)
@@ -43,8 +43,8 @@ ASCharacter::ASCharacter()
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 
 	PerceptionStimuliComp = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("PerceptionStimuliComp"));
-	
-	
+
+	TeamId = TEAM_ID_PLAYERS;
 }
 
 void ASCharacter::PostInitializeComponents()
@@ -62,7 +62,7 @@ void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetGenericTeamId(FGenericTeamId(0));
+	//SetGenericTeamId(FGenericTeamId(0));
 }
 
 // Called to bind functionality to input
@@ -95,6 +95,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComp->BindAction(Input_SecondaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::SecondaryAttack);
 	InputComp->BindAction(Input_Dash, ETriggerEvent::Triggered, this, &ASCharacter::Dash);
 	
+}
+
+FGenericTeamId ASCharacter::GetGenericTeamId() const
+{
+	return TeamId;
 }
 
 void ASCharacter::Move(const FInputActionInstance& Instance)
