@@ -39,10 +39,6 @@ protected:
 	
 	virtual void BeginPlay() override;
 
-	virtual void OnPossess(APawn* InPawn) override;
-
-	virtual void PostInitializeComponents() override;
-
 public: 
 	virtual FGenericTeamId GetGenericTeamId() const override;
 	

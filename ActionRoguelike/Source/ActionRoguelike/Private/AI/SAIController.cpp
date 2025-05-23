@@ -52,22 +52,8 @@ void ASAIController::BeginPlay()
 	
 }
 
-
-void ASAIController::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-}
-
 FGenericTeamId ASAIController::GetGenericTeamId() const
 {
 	return TeamId;
 }
 
-
-void ASAIController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-	
-
-}
