@@ -22,11 +22,12 @@ public:
 	ASAICharacter();
 
 protected:
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Components")
+	TObjectPtr<USAttributeComponent> AttributeComp;
 
 	virtual void PostInitializeComponents() override;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Components")
-	TObjectPtr<USAttributeComponent> AttributeComp;
+	void SetTargetActor(AActor* NewTarget);
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);

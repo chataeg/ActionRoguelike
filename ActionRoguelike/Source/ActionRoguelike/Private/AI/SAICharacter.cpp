@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISense_Damage.h"
 #include "Perception/PawnSensingComponent.h"
 
 // Sets default values
@@ -36,11 +37,25 @@ void ASAICharacter::PostInitializeComponents()
 	
 }
 
+void ASAICharacter::SetTargetActor(AActor* NewTarget)
+{
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if (AIC)
+	{
+		AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", NewTarget);
+			
+		//DrawDebugString(GetWorld(),GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true );
+					
+	}
+}
+
 void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
-	float Delta)
+                                    float Delta)
 {
 	if (Delta < 0.0f)
 	{
+
+		
 		if (NewHealth <= 0.0f)
 		{
 			// How to Stop AI , AI DEAD
@@ -58,27 +73,21 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 				AIC->GetBrainComponent()->StopLogic("Killed");
 			}
 			
-			
 			// Ragdoll
 			GetMesh()->SetAllBodiesSimulatePhysics(true);
 			GetMesh()->SetCollisionProfileName("Ragdoll");
-			
-			
-
-			
 
 			// Set Lifespan
 
 			SetLifeSpan(10.0f);
-
-
-			
-			
+		}
+		else
+		{
+			// How to AISense_Damage : ReportDamageEvent 호출해서 간편하게 지정
+			UAISense_Damage::ReportDamageEvent(this,this,InstigatorActor,FMath::Abs(Delta),
+				InstigatorActor->GetActorLocation(),GetActorLocation());
 		}
 	}
-
-	
-
 }
 
 FGenericTeamId ASAICharacter::GetGenericTeamId() const

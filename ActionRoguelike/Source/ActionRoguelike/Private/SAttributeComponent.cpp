@@ -18,7 +18,8 @@ bool USAttributeComponent::IsAlive() const
 }
 
 
-bool USAttributeComponent::ApplyHealthChange(float Delta)
+
+bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	float OldHealth = Health;
 	float NewHealth = FMath::Clamp(OldHealth + Delta, 0.0f, HealthMax);
@@ -26,7 +27,7 @@ bool USAttributeComponent::ApplyHealthChange(float Delta)
 	float ActualDelta = NewHealth - OldHealth;
 	
 	// How to Broadcast : 
-	OnHealthChanged.Broadcast(nullptr, this, NewHealth,ActualDelta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth,ActualDelta);
 	Health = NewHealth;
 	
 	return ActualDelta != 0;

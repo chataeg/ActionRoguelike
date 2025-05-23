@@ -27,7 +27,7 @@ EBTNodeResult::Type USBTTask_HealSelf::ExecuteTask(UBehaviorTreeComponent& Owner
 
 		if (ensure(AttributeComp))
 		{
-			AttributeComp->ApplyHealthChange(AttributeComp->GetHealthMax());
+			AttributeComp->ApplyHealthChange(nullptr, AttributeComp->GetHealthMax());
 		}
 
 
