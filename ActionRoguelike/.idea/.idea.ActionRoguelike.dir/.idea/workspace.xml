@@ -7,13 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc63b652-d399-4bfe-8846-e7749a321171" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ActionRoguelike.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ActionRoguelike.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SAttributeComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SAttributeComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SGameModeBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SGameModeBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Public/AI/SAICharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Public/AI/SAICharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Public/SAttributeComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Public/SAttributeComponent.h" afterDir="false" />
-    </list>
+    <list default="true" id="cc63b652-d399-4bfe-8846-e7749a321171" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -310,7 +304,7 @@
       <workItem from="1747786342329" duration="22476000" />
       <workItem from="1747909483801" duration="321000" />
       <workItem from="1747958776697" duration="5410000" />
-      <workItem from="1747965003316" duration="14619000" />
+      <workItem from="1747965003316" duration="15091000" />
     </task>
     <servers />
   </component>
