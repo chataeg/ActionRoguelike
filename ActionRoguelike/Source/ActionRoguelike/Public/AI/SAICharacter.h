@@ -40,7 +40,7 @@ public:
 	
 	
 
-	// // How to FSeePawnDelegate : Deprecated
+	// How to FSeePawnDelegate : Deprecated
 	// UFUNCTION()
 	// void OnPawnSeen(APawn* Pawn);
 

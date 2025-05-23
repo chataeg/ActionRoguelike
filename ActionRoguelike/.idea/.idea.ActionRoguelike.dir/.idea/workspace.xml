@@ -9,13 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="cc63b652-d399-4bfe-8846-e7749a321171" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ActionRoguelike.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ActionRoguelike.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRoguelike/AI/MinionControllerBP.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRoguelike/AI/MinionControllerBP.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRoguelike/AI/MinionRangedBT.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRoguelike/AI/MinionRangedBT.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Private/AI/SAICharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Private/AI/SAICharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Private/AI/SBTTask_HealSelf.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Private/AI/SBTTask_HealSelf.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SAttributeComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SAttributeComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SMagicProjectile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SMagicProjectile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SPowerup_HealthPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SPowerup_HealthPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SGameModeBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Private/SGameModeBase.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Public/AI/SAICharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Public/AI/SAICharacter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ActionRoguelike/Public/SAttributeComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ActionRoguelike/Public/SAttributeComponent.h" afterDir="false" />
     </list>
@@ -42,6 +37,7 @@
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/AITestSuite/Classes/BehaviorTree/TestBTDecorator_DelayedAbort.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/AITestSuite/Classes/MockAI.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/AITestSuite/Private/BehaviorTree/TestBTDecorator_Blueprint.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/AITestSuite/Private/MockAI/MockGameplayTasks.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/AnimationDataController/Private/AnimDataController.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/AnimationDataController/Public/AnimDataController.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/AssetTools/Private/AssetTypeActions/AssetTypeActions_Blueprint.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -54,7 +50,11 @@
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/CookOnTheFlyNetServer/Private/CookOnTheFlyNetServerBase.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/DeviceManager/Private/Models/DeviceManagerModel.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/FunctionalTesting/Classes/FunctionalAITest.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/FunctionalTesting/Private/AutomationBlueprintFunctionLibrary.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/FunctionalTesting/Private/FunctionalAITest.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/FunctionalTesting/Private/FunctionalUIScreenshotTest.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/FunctionalTesting/Private/ScreenshotFunctionalTest.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/FunctionalTesting/Private/ScreenshotFunctionalTestBase.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/FunctionalTesting/Public/AutomationBlueprintFunctionLibrary.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/GraphColor/Private/graphStructures.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/HierarchicalLODUtilities/Public/HierarchicalLODUtilities.h" root0="FORCE_HIGHLIGHTING" />
@@ -144,6 +144,7 @@
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/Pawn.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerController.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/WorldSettings.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/PhysicsEngine/RadialForceComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/Actor.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/Animation/AnimNode_LinkedAnimGraph.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -309,7 +310,7 @@
       <workItem from="1747786342329" duration="22476000" />
       <workItem from="1747909483801" duration="321000" />
       <workItem from="1747958776697" duration="5410000" />
-      <workItem from="1747965003316" duration="13685000" />
+      <workItem from="1747965003316" duration="14619000" />
     </task>
     <servers />
   </component>

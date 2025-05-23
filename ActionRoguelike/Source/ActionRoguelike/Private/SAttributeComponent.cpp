@@ -3,6 +3,7 @@
 
 #include "SAttributeComponent.h"
 
+
 // Sets default values for this component's properties
 USAttributeComponent::USAttributeComponent()
 {
@@ -41,5 +42,26 @@ float USAttributeComponent::GetHealth() const
 float USAttributeComponent::GetHealthMax() const
 {
 	return HealthMax;
+}
+
+USAttributeComponent* USAttributeComponent::GetAttributes(AActor* FromActor)
+{
+	if (FromActor)
+	{
+		return Cast<USAttributeComponent> (FromActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+	
+	}
+	return nullptr;
+}
+
+bool USAttributeComponent::IsActorAlive(AActor* Actor)
+{
+	USAttributeComponent* AttributeComp = GetAttributes(Actor);
+	if (AttributeComp)
+	{
+		return AttributeComp->IsAlive();
+	}
+	// AttributeComp 가 없으면 죽은 걸로 생각하겠다.
+	return false;
 }
 
