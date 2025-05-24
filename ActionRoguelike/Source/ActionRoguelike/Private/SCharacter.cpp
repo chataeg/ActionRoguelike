@@ -102,6 +102,12 @@ FGenericTeamId ASCharacter::GetGenericTeamId() const
 	return TeamId;
 }
 
+void ASCharacter::HealSelf(float Amount /* = 100 */)
+{
+	AttributeComp->ApplyHealthChange(this,Amount);
+	
+}
+
 void ASCharacter::Move(const FInputActionInstance& Instance)
 {
 	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::Move"));

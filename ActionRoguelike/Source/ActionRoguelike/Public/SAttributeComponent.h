@@ -50,6 +50,9 @@ protected:
 	// HealthMax, Stamina, Strength
 
 public:
+
+	UFUNCTION(BlueprintCallable)
+	bool Kill(AActor* InstigatorActor);
 	
 	UFUNCTION(BlueprintCallable,Category = "Attributes")
 	bool IsAlive() const;

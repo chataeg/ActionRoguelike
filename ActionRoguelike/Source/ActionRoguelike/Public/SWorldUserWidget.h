@@ -27,6 +27,9 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	FVector WorldOffest;
+
+	
+	
 	UPROPERTY(BlueprintReadOnly, Category = "UI")
 	TObjectPtr<AActor> AttachedActor;
 	 

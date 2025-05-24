@@ -145,4 +145,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
+
+	// How to Exec : 콘솔 커맨드로 만들 수 있음.
+	UFUNCTION(Exec)
+	void HealSelf(float Amount = 100);
+	
 };

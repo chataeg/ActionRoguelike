@@ -4,6 +4,7 @@
 #include "SGameModeBase.h"
 
 #include "EngineUtils.h"
+#include "SAttributeComponent.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "WorldPartition/ContentBundle/ContentBundleLog.h"
@@ -20,6 +21,21 @@ void ASGameModeBase::StartPlay()
 	// Actual amount of bots and whether it`s allowed to spawn determined by spawn logic later in the chain . . .
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ASGameModeBase::SpawnBotTimerElasped, SpawnTimerInterval, true);
 	
+}
+
+void ASGameModeBase::KillAll()
+{
+	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
+	{
+		ASAICharacter* Bot = *It;
+
+		USAttributeComponent* AttributeComponent = USAttributeComponent::GetAttributes(Bot);
+		
+		if (ensure(AttributeComponent) && AttributeComponent->IsAlive())
+		{
+			AttributeComponent->Kill(this); //@fixme pass in Player? for kill credit
+		}
+	}
 }
 
 void ASGameModeBase::SpawnBotTimerElasped()
