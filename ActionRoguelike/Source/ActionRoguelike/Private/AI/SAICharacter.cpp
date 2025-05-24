@@ -6,13 +6,11 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "SAttributeComponent.h"
+#include "SWorldUserWidget.h"
 #include "ActionRoguelike/ActionRoguelike.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Perception/AIPerceptionComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Perception/AISense_Damage.h"
-#include "Perception/PawnSensingComponent.h"
 
 // Sets default values
 ASAICharacter::ASAICharacter()
@@ -59,6 +57,18 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 	if (Delta < 0.0f)
 	{
 
+
+		if (ActiveHealthBar == nullptr)
+		{
+			ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+			if (ActiveHealthBar)
+			{
+				ActiveHealthBar->AttachedActor = this;
+				ActiveHealthBar->AddToViewport();
+			}	
+		}
+
+		
 		GetMesh()->SetCustomPrimitiveDataFloat(HitFlash_CustomPrimitiveIndex, GetWorld()->TimeSeconds);
 		
 		if (NewHealth <= 0.0f)
@@ -75,6 +85,7 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 				// └── UBrainComponent
 				// 	  ├── UBehaviorTreeComponent
 				// 	  └── UStateTreeComponent
+				
 				AIC->GetBrainComponent()->StopLogic("Killed");
 			}
 			
@@ -89,8 +100,12 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 		else
 		{
 			// How to AISense_Damage : ReportDamageEvent 호출해서 간편하게 지정
-			UAISense_Damage::ReportDamageEvent(this,this,InstigatorActor,FMath::Abs(Delta),
-				InstigatorActor->GetActorLocation(),GetActorLocation());
+			if (IsValid(InstigatorActor))
+			{
+				UAISense_Damage::ReportDamageEvent(this,this,InstigatorActor,FMath::Abs(Delta),
+					InstigatorActor->GetActorLocation(),GetActorLocation());
+			
+			}
 		}
 	}
 }

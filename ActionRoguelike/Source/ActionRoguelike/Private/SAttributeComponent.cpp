@@ -3,6 +3,9 @@
 
 #include "SAttributeComponent.h"
 
+#include "SCharacter.h"
+#include "AI/SAICharacter.h"
+
 
 // Sets default values for this component's properties
 USAttributeComponent::USAttributeComponent()
@@ -22,15 +25,18 @@ bool USAttributeComponent::IsAlive() const
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
+
+	
+	
 	float OldHealth = Health;
 	float NewHealth = FMath::Clamp(OldHealth + Delta, 0.0f, HealthMax);
 
 	float ActualDelta = NewHealth - OldHealth;
 	
-	// How to Broadcast : 
-	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth,ActualDelta);
+	// How to Broadcast :
 	Health = NewHealth;
-	
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, ActualDelta);
+
 	return ActualDelta != 0;
 }
 

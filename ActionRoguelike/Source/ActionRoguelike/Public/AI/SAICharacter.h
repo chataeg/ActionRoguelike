@@ -4,13 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GenericTeamAgentInterface.h"
-#include "SAttributeComponent.h"
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
 class USAttributeComponent;
+class UUserWidget;
+class USWorldUserWidget;
 // Deprecated 
 class UPawnSensingComponent;
+
 
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter, public IGenericTeamAgentInterface
@@ -22,6 +24,12 @@ public:
 	ASAICharacter();
 
 protected:
+
+	UPROPERTY()
+	TObjectPtr<USWorldUserWidget> ActiveHealthBar;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 	
 	/* Index must match the CustomPrimitiveData index used in the Overlay material */
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
