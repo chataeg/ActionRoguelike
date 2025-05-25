@@ -44,11 +44,18 @@ protected:
 
 	UFUNCTION()
 	void OnQueryCompleted( UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
-	
-	// How to GameMode : 게임모드는 모든 액터들에 대해 Beginplay 를 호출하는 역할을 하기 때문에 BeginPlay 가 없다. 그 대신 StartPlay 사용.
 
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
+	
+	
 public:
+
+	virtual void OnActorKilled(AActor* VictimActor, AActor* Killer);
+	
 	ASGameModeBase();
+	
+	// How to StartPlay : 게임모드는 모든 액터들에 대해 Beginplay 를 호출하는 역할을 하기 때문에 BeginPlay 가 없다. 그 대신 StartPlay 사용.
 	virtual void StartPlay() override;
 
 	UFUNCTION(Exec)

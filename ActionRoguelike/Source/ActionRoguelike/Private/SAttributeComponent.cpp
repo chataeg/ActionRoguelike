@@ -4,6 +4,7 @@
 #include "SAttributeComponent.h"
 
 #include "SCharacter.h"
+#include "SGameModeBase.h"
 #include "AI/SAICharacter.h"
 
 
@@ -42,6 +43,19 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	// How to Broadcast :
 	Health = NewHealth;
 	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, ActualDelta);
+
+
+	// Died
+	if (ActualDelta < 0.0f && Health == 0.0f)
+	{
+		ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
+		if (GM)
+		{
+			GM->OnActorKilled(GetOwner(), InstigatorActor);	
+		}
+		 
+	}
+	
 
 	return ActualDelta != 0;
 }
