@@ -327,6 +327,12 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 	}
 }
 
+// How to override Engine_Api : 엔진의 함수를 오버라이딩 해서 사용할 수 있음.
+FVector ASCharacter::GetPawnViewLocation() const
+{
+	return CameraComp->GetComponentLocation();
+}
+
 void ASCharacter::Dash_TimeElasped()
 {
 	SpawnProjectile(DashProjectileClass);

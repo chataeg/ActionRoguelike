@@ -4,6 +4,7 @@
 #include "SInteractionComponent.h"
 #include "SGameplayInterface.h"
 
+static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("su.InteractionDebugDraw"), false, TEXT("Enable Debug Lines for Interact Component."),ECVF_Cheat);
 
 // Sets default values for this component's properties
 USInteractionComponent::USInteractionComponent()
@@ -36,6 +37,8 @@ void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void USInteractionComponent::PrimaryInteract()
 {
+	bool bDebugDraw = CVarDebugDrawInteraction.GetValueOnGameThread();
+	
 	// Interaction Logic
 	
 	UE_LOG(LogTemp,Log,TEXT("USInteractionComponent::PrimaryInteract"));
@@ -48,10 +51,9 @@ void USInteractionComponent::PrimaryInteract()
 	
 	FVector EyeLocation;
 	FRotator EyeRotation;
-
 	// eye 의 Location / Rotation 을 가져옴
 	MyOwner->GetActorEyesViewPoint(EyeLocation,EyeRotation);
-
+	
 	// LineTrace / RayCast 가 끝날 위치
 	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
 
@@ -76,6 +78,8 @@ void USInteractionComponent::PrimaryInteract()
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor)
 		{
+
+		
 			
 			// 인터페이스를 구현하는지 확인(접두 U 로 해야 함, 사용할 땐 I)
 			if(HitActor->Implements<USGameplayInterface>())
@@ -86,7 +90,13 @@ void USInteractionComponent::PrimaryInteract()
 
 				// 인터페이스 실행은 Execute_메서드이름  으로 한다.
 				ISGameplayInterface::Execute_Interact(HitActor, MyPawn);
-				DrawDebugSphere(GetWorld(), Hit.ImpactPoint,Radius,32, LineColor, false, 2.0f);
+
+				if (bDebugDraw)
+				{
+					DrawDebugSphere(GetWorld(), Hit.ImpactPoint,Radius,32, LineColor, false, 2.0f);
+					
+				}
+				
 				break;
 			}
 		}
@@ -94,7 +104,10 @@ void USInteractionComponent::PrimaryInteract()
 	
 	}
 	
-	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f,0,2.0f);
+	if (bDebugDraw)
+	{
+		DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f,0,2.0f);
+	}
 	
 }
 

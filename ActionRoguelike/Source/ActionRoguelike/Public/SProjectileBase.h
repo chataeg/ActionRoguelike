@@ -53,7 +53,7 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	float Damage;
+	float DamageAmount;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USphereComponent> SphereComp;

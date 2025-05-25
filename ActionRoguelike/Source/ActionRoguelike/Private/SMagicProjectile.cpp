@@ -5,6 +5,7 @@
 
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SGameplayFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 
 // Sets default values
@@ -12,7 +13,7 @@ ASMagicProjectile::ASMagicProjectile()
 {
 	SphereComp->SetSphereRadius(20.0f);
 	InitialLifeSpan = 10.f;
-	Damage = 50.0f;
+	DamageAmount = 50.0f;
 }
 
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -24,24 +25,29 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 	{
 		
 		// How to GetComponentByClass : StaticClass 를 통해 액터가 컴포넌트를 가지고 있는지 확인
-		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>((OtherActor->GetComponentByClass(USAttributeComponent::StaticClass())));
-		if (AttributeComp)
-		{
-			// How to IsA : 특정 클래스인지 확인할 수 있음
-			if (OtherActor->IsA(ASCharacter::StaticClass()) )
-			{
-				AttributeComp->ApplyHealthChange(GetInstigator(),-1.0f);
-			}
-			else
-			{
-				AttributeComp->ApplyHealthChange(GetInstigator(),-Damage);
-			}
-				
-			// 맞았으면 Destroy
-			// Destroy();
+		// USAttributeComponent* AttributeComp = Cast<USAttributeComponent>((OtherActor->GetComponentByClass(USAttributeComponent::StaticClass())));
+		// if (AttributeComp)
+		// {
+		// 	// How to IsA : 특정 클래스인지 확인할 수 있음
+		// 	if (OtherActor->IsA(ASCharacter::StaticClass()) )
+		// 	{
+		// 		AttributeComp->ApplyHealthChange(GetInstigator(),-1.0f);
+		// 	}
+		// 	else
+		// 	{
+		// 		AttributeComp->ApplyHealthChange(GetInstigator(),-DamageAmount);
+		// 	}
+		// 		
+		// 	Explode();
+		// }
 
+		
+		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount,SweepResult))
+		{
 			Explode();
 		}
+		
+		
 	}
 }
 

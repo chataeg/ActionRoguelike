@@ -10,6 +10,8 @@
 #include "ActionRoguelike/ActionRoguelike.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AISense_Damage.h"
 
 // Sets default values
@@ -21,10 +23,12 @@ ASAICharacter::ASAICharacter()
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	TeamId = TEAM_ID_BOTS;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	GetMesh()->SetGenerateOverlapEvents(true);
 	
 	//TimeToHitParamName = "TimeToHit";
 	HitFlash_CustomPrimitiveIndex = 0;
-	
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -54,6 +58,7 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget)
 void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
                                     float Delta)
 {
+	
 	if (Delta < 0.0f)
 	{
 
@@ -70,7 +75,9 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 
 		
 		GetMesh()->SetCustomPrimitiveDataFloat(HitFlash_CustomPrimitiveIndex, GetWorld()->TimeSeconds);
-		
+
+
+		// Died
 		if (NewHealth <= 0.0f)
 		{
 			// How to Stop AI , AI DEAD
@@ -93,6 +100,11 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 			GetMesh()->SetAllBodiesSimulatePhysics(true);
 			GetMesh()->SetCollisionProfileName("Ragdoll");
 
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			GetCharacterMovement()->DisableMovement();
+			
+
+			
 			// Set Lifespan
 
 			SetLifeSpan(10.0f);
