@@ -10,7 +10,7 @@
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "NiagaraFunctionLibrary.h"
+#include "SActionComponent.h"
 #include "ActionRoguelike/ActionRoguelike.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 
@@ -18,22 +18,22 @@
 
 ASCharacter::ASCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	// 캐릭터 / 캐릭터 메쉬가 이동 방향으로 자동 회전
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	// 컨트롤러 회전을 캐릭터가 따라가지 않게 함 (카메라와 입력 분리)
 	bUseControllerRotationYaw = false;
-	
-	
+
+
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	// 카메라가 컨트롤러 회전을 따라감
 	SpringArmComp->bUsePawnControlRotation = true;
 	SpringArmComp->SetupAttachment(RootComponent);
 	// 부모(캐릭터) 회전을 무시하고 절대 좌표로 회전함
 	SpringArmComp->SetUsingAbsoluteRotation(true);
-	
+
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 
@@ -44,6 +44,9 @@ ASCharacter::ASCharacter()
 
 	PerceptionStimuliComp = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("PerceptionStimuliComp"));
 
+	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
+
+
 	TeamId = TEAM_ID_PLAYERS;
 }
 
@@ -51,10 +54,8 @@ void ASCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	AttributeComp->OnHealthChanged.AddDynamic(this,&ASCharacter::OnHealthChanged);
-	
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
 }
-
 
 
 // Called when the game starts or when spawned
@@ -77,24 +78,26 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	// 입력 서브시스템을 가져오고 check
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(Subsystem);
-	
+
 	Subsystem->ClearAllMappings();
 
-	Subsystem->AddMappingContext(DefaultInputMapping,0);
+	Subsystem->AddMappingContext(DefaultInputMapping, 0);
 
 	UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 
 	// input binding바인딩
 	// How to EnhancedInput : BP에서 InputAction 생성 뒤 C++ 에서 해당 입력에 따른 함수를 바인딩 해주어야 함.
-	InputComp->BindAction(Input_Move, ETriggerEvent::Triggered,this,&ASCharacter::Move);
-	InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered,this,&ASCharacter::LookMouse);
-	
+	InputComp->BindAction(Input_Move, ETriggerEvent::Triggered, this, &ASCharacter::Move);
+	InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered, this, &ASCharacter::LookMouse);
+
 	InputComp->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
 	InputComp->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ASCharacter::Jump);
 	InputComp->BindAction(Input_Interact, ETriggerEvent::Triggered, this, &ASCharacter::Interact);
 	InputComp->BindAction(Input_SecondaryAttack, ETriggerEvent::Triggered, this, &ASCharacter::SecondaryAttack);
 	InputComp->BindAction(Input_Dash, ETriggerEvent::Triggered, this, &ASCharacter::Dash);
-	
+
+	InputComp->BindAction(Input_Sprint, ETriggerEvent::Started, this, &ASCharacter::SprintStart);
+	InputComp->BindAction(Input_Sprint, ETriggerEvent::Completed, this, &ASCharacter::SprintStop);
 }
 
 FGenericTeamId ASCharacter::GetGenericTeamId() const
@@ -104,8 +107,7 @@ FGenericTeamId ASCharacter::GetGenericTeamId() const
 
 void ASCharacter::HealSelf(float Amount /* = 100 */)
 {
-	AttributeComp->ApplyHealthChange(this,Amount);
-	
+	AttributeComp->ApplyHealthChange(this, Amount);
 }
 
 void ASCharacter::Move(const FInputActionInstance& Instance)
@@ -120,25 +122,24 @@ void ASCharacter::Move(const FInputActionInstance& Instance)
 	const FVector2d AxisValue = Instance.GetValue().Get<FVector2d>();
 
 	// 앞 뒤 이동
-	AddMovementInput(ControlRot.Vector(),AxisValue.Y);
-	
+	AddMovementInput(ControlRot.Vector(), AxisValue.Y);
+
 	// 오른쪽 & 왼쪽 이동
 	const FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
-	
-	AddMovementInput(RightVector,AxisValue.X);
+
+	AddMovementInput(RightVector, AxisValue.X);
 
 	// 아래처럼 작성도 가능하다. (똑같이 동작함.)
 	// const FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
 	// AddMovementInput(GetActorForwardVector(),AxisValue.Y);
 	// AddMovementInput(GetActorRightVector(),AxisValue.X);
-	
 }
 
 void ASCharacter::LookMouse(const FInputActionValue& InputValue)
 {
 	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::LookMouse"));
 	const FVector2D Value = InputValue.Get<FVector2D>();
-	
+
 	AddControllerYawInput(Value.X);
 	AddControllerPitchInput(Value.Y);
 }
@@ -147,33 +148,36 @@ void ASCharacter::LookStick(const FInputActionValue& InputValue)
 {
 }
 
+
+void ASCharacter::SprintStart()
+{
+	ActionComp->StartActionByName(this, "Sprint");
+}
+
+void ASCharacter::SprintStop()
+{
+	ActionComp->StopActionByName(this, "Sprint");
+}
+
+
 void ASCharacter::PrimaryAttack()
 {
-	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryAttack"));
-	// AnimMontage 플레이
-	PlayAnimMontage(AttackAnim);
-
-	// 0.2초가 지나면 메서드가 불리게 한다.
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack,this,&ASCharacter::PrimaryAttack_TimeElasped,0.2f);
-
-	// 타이머 종료 방법 
-	// GetWorldTimerManager().ClearTimer(TimerHanlde_PrimaryAttack);
+	ActionComp->StartActionByName(this,"PrimaryAttack");
 }
 
 void ASCharacter::SecondaryAttack()
 {
-	PlayAnimMontage(AttackAnim);
-
-	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack,this,&ASCharacter::SecondaryAttack_TimeElasped,0.2f);
+	ActionComp->StartActionByName(this,"SecondaryAttack");
 }
 
+#pragma region SpawnProjectile
+/*
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 {
-
 	// How to Debug
 	// How to ensure : ensure 은 한번만 트리거된다. (콜스택 생성해줌) 항상 하려면 ensureAlways 사용 shpping에서 ensure 는 사라진다.
 	// How to check : check 는 잘 안쓴다. 트리거되면 계속 진행이 안 되고 abort 해서.
-	
+
 #pragma region LineTrace
 	// How to LineTrace
 
@@ -183,7 +187,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	// 	// FRotator HandRotation = GetMesh()->GetSocketRotation(("Muzzle_o1"));
 	// 	// 컨트롤러가 보고 있는 방향과 손 소켓의 위치로 Projectile을 발사할 트랜스폼 설정
 	// 	// AssignMent 2 - 크로스헤어에 맞게 보정
- //  
+	//  
 	// 	FVector PawnLocation = CameraComp->GetComponentLocation();
 	// 	
 	// 	
@@ -196,7 +200,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	// 	if (GetWorld()->LineTraceSingleByObjectType(Hit,PawnLocation, End, ObjectQueryParams))
 	// 	{
 	// 		FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation,Hit.ImpactPoint);
- //  
+	//  
 	// 		FTransform SpawnTM = FTransform(NewRotation,HandLocation);
 	//        
 	// 		// 스폰 관련해 파라미터 설정할 구조체
@@ -204,15 +208,15 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	// 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	// 		// 내장된 Instigator 로 시전자 설정 
 	// 		SpawnParams.Instigator = this;
- //       		
+	//       		
 	// 		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
 	// 	
 	// 	}
 	// 	DrawDebugLine(GetWorld(), HandLocation, Hit.Location, FColor::Red, false, 2.0f, 0, 1.0f);
 	// }
 #pragma endregion
-	
-	
+
+
 	// How to Sweep
 	if (ensure(ClassToSpawn))
 	{
@@ -237,25 +241,25 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 		ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
 		ObjParams.AddObjectTypesToQuery(ECC_Pawn);
 
-		// 카메라와 충돌을 막기 위해 30.f 앞에서 발사
+		// // 카메라와 충돌을 막기 위해 30.f 앞에서 발사
 		FVector TraceStart = CameraComp->GetComponentLocation() + GetControlRotation().Vector() * 30.f;
-	
+		
 		FVector TraceEnd = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 50000);
 
+		
 		// Hit 시 정보를 저장할 구조체
 		FHitResult Hit;
-	
-		if (GetWorld()->SweepSingleByObjectType(Hit,TraceStart,TraceEnd,FQuat::Identity, ObjParams,Shape,Params))
+
+		if (GetWorld()->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity, ObjParams, Shape, Params))
 		{
 			TraceEnd = Hit.ImpactPoint;
 		}
-	
-		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd-HandLocation).Rotator();
-	
+
+		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();
+
 		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
 
 
-		
 		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
 
 		// How to Niagara : PublicDependencyModuleNames 에 Niagara 추가 필요. 기본적으로 cascade particle system 의 최신 버젼이라 생각중.
@@ -270,27 +274,21 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 		// 	true,                             // 8. 자동 활성화 여부
 		// 	ENCPoolMethod::AutoRelease        // 9. 풀링 방식
 		// );
-		
-		UNiagaraFunctionLibrary::SpawnSystemAttached(CastingEffect,GetMesh(),TEXT("Muzzle_01"), FVector::ZeroVector, FRotator::ZeroRotator,
-			EAttachLocation::SnapToTarget, true, true, ENCPoolMethod::AutoRelease);
-		
-		
-		
+
+		UNiagaraFunctionLibrary::SpawnSystemAttached(CastingEffect, GetMesh(),TEXT("Muzzle_01"), FVector::ZeroVector,
+		                                             FRotator::ZeroRotator,
+		                                             EAttachLocation::SnapToTarget, true, true,
+		                                             ENCPoolMethod::AutoRelease);
+
+
 		FVector DebugEnd = Hit.bBlockingHit ? Hit.Location : TraceEnd;
 		DrawDebugLine(GetWorld(), HandLocation, DebugEnd, FColor::Red, false, 2.0f, 0, 1.0f);
 		//UE_LOG(LogTemp, Warning, TEXT("Instigator: %s"), *GetInstigator()->GetName());
 	}
 }
+*/
+#pragma endregion 
 
-
-void ASCharacter::PrimaryAttack_TimeElasped()
-{
-	SpawnProjectile(PrimaryAttackClass);
-}
-void ASCharacter::SecondaryAttack_TimeElasped()
-{
-	SpawnProjectile(SecondaryAttackClass);
-}
 void ASCharacter::Interact()
 {
 	//UE_LOG(LogTemp,Log,TEXT("ASCharacter::PrimaryInteract"));
@@ -304,22 +302,19 @@ void ASCharacter::Interact()
 
 void ASCharacter::Dash()
 {
-	PlayAnimMontage(AttackAnim);
-	GetWorldTimerManager().SetTimer(TimerHandle_Dash,this,&ASCharacter::Dash_TimeElasped,0.2f);
+	ActionComp->StartActionByName(this,"Dash");
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
                                   float Delta)
 {
-
 	if (Delta < 0.0f)
 	{
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-		
 	}
 
-	
-	if (NewHealth <= 0.0f && Delta< 0.0f)
+
+	if (NewHealth <= 0.0f && Delta < 0.0f)
 	{
 		// How to DisableInput : 입력 자체를 끊는 것이 아니라 Pawn이 더 이상 컨트롤러의 입력을 받지 못하게 하는 것.
 		APlayerController* PC = Cast<APlayerController>(GetController());
@@ -333,15 +328,9 @@ FVector ASCharacter::GetPawnViewLocation() const
 	return CameraComp->GetComponentLocation();
 }
 
-void ASCharacter::Dash_TimeElasped()
-{
-	SpawnProjectile(DashProjectileClass);
-}
 
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-
