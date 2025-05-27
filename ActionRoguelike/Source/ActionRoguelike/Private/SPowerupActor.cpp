@@ -13,6 +13,7 @@ ASPowerupActor::ASPowerupActor()
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MeshComp->SetupAttachment(RootComponent);
 	
+	MeshComp->SetCollisionProfileName("Powerup");
 	RespawnTime = 10.f;
 	
 

@@ -23,6 +23,10 @@ public:
 	
 protected:
 
+
+	UPROPERTY(EditDefaultsOnly, Category = "Credits")
+	int32 Price;
+
 	
 	
 	

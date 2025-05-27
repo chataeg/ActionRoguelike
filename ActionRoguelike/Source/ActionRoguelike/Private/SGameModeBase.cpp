@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SPlayerState.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "WorldPartition/ContentBundle/ContentBundleLog.h"
@@ -18,6 +19,8 @@ static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT
 
 ASGameModeBase::ASGameModeBase()
 {
+	CreditsPerKil = 20;
+	
 	SpawnTimerInterval = 2.0f;
 }
 
@@ -47,7 +50,7 @@ void ASGameModeBase::KillAll()
 
 void ASGameModeBase::SpawnBotTimerElasped()
 {
-	if (CVarSpawnBots.GetValueOnGameThread())
+	if (!CVarSpawnBots.GetValueOnGameThread())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bot spawning disabled via cvar 'CVarSpawnBots'"));
 		return;  
@@ -142,5 +145,16 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay,Delegate, 2.0f, false);
 	}
+
+	ASAICharacter* AI = Cast<ASAICharacter>(VictimActor);
+	if (AI)
+	{
+		
+		ASCharacter* KillerPlayer = Cast<ASCharacter>(Killer);
+		ASPlayerState* PlayerState = Cast<ASPlayerState>(KillerPlayer->GetPlayerState());
+		PlayerState->AddCredits(CreditsPerKil);
+		
+	}
+	
 	UE_LOG(LogTemp,Log, TEXT("OnActorKilled : Victim %s, Killer : %s"),*GetNameSafe(VictimActor), *GetNameSafe(Killer));
 }

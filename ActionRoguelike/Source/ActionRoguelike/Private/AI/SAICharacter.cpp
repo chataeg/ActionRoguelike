@@ -6,11 +6,13 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "SAttributeComponent.h"
+#include "SPowerup_Credits.h"
 #include "SWorldUserWidget.h"
 #include "ActionRoguelike/ActionRoguelike.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AISense_Damage.h"
 
@@ -82,6 +84,12 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 		{
 			// How to Stop AI , AI DEAD
 
+			FActorSpawnParameters SpawnParameters;
+			SpawnParameters.Instigator = this;
+			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			
+			GetWorld()->SpawnActor<ASPowerup_Credits>(GetActorLocation(), GetActorRotation(), SpawnParameters);
+			
 			// Stopping BT
 			AAIController* AIC = Cast<AAIController>(GetController());
 

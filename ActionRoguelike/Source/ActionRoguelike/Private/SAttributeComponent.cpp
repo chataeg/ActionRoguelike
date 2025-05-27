@@ -30,8 +30,6 @@ bool USAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
-
-
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	if (!GetOwner()->CanBeDamaged() && Delta < 0.0f)
