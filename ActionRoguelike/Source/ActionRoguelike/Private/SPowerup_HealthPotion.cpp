@@ -14,7 +14,6 @@ ASPowerup_HealthPotion::ASPowerup_HealthPotion()
 
 void ASPowerup_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 {
-	Super::Interact_Implementation(InstigatorPawn);
 
 	if (!ensure(InstigatorPawn))
 	{
@@ -34,14 +33,13 @@ void ASPowerup_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 
 				if (!bIsActive || AttributeComp->GetHealth() > 0.0f || AttributeComp->GetHealth() != AttributeComp->GetHealthMax())
 				{
-					
-					AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax());
-					PlayerState->AddCredits(-Price);
-					HideAndCooldownPowerUp();
+					if (PlayerState->RemoveCredits(Price) && AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax()))
+					{
+						// 성공적으로 힐이 완료되고 돈이 빠져나갔을 때
+						HideAndCooldownPowerUp();
+					}
 				}
-			
 			}
-			
 		}
 	}
 }

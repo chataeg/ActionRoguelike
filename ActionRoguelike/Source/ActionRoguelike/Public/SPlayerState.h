@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Credits")
 	void AddCredits(int32 Delta);
 
+	UFUNCTION(BlueprintCallable, Category = "Credits")
+	bool RemoveCredits(int32 Delta);
+
 	
 	// 블루프린트에서 바인딩 되어 있음 ~~ UI에 Credits 값을 갱신 시켜 준다.
 	UPROPERTY(BlueprintAssignable, Category = "Events")

@@ -12,6 +12,11 @@ ASPowerup_Credits::ASPowerup_Credits()
 
 void ASPowerup_Credits::Interact_Implementation(APawn* InstigatorPawn)
 {
+	if (!ensure(InstigatorPawn))
+	{
+		return;
+	}
+	
 	if (ASPlayerState* PS = Cast<ASPlayerState>(InstigatorPawn->GetPlayerState()))
 	{
 		PS->AddCredits(CreditsAmount);
