@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
+class USActionComponent;
 class USAttributeComponent;
 class UUserWidget;
 class USWorldUserWidget;
@@ -37,7 +38,11 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USAttributeComponent> AttributeComp;
+	
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Components")
+	TObjectPtr<USActionComponent> ActionComp;
 
+	
 	virtual void PostInitializeComponents() override;
 
 	void SetTargetActor(AActor* NewTarget);

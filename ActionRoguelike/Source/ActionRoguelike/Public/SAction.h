@@ -42,7 +42,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StartAction(AActor* Instigator);
 	
-	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Action")
 	void StopAction(AActor* Instigator);
 	
 	// How to FName : Name Pool 에 문자열을 등록해 인덱스끼리 비교하는 해시 시스템이기 때문에 빠르다.

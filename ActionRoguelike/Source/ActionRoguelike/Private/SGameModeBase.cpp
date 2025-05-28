@@ -19,7 +19,7 @@ static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT
 
 ASGameModeBase::ASGameModeBase()
 {
-	CreditsPerKil = 20;
+	CreditsPerKill = 20;
 	
 	SpawnTimerInterval = 2.0f;
 }
@@ -145,18 +145,21 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay,Delegate, 2.0f, false);
 	}
-
-	ASAICharacter* AI = Cast<ASAICharacter>(VictimActor);
-	if (AI)
+	
+	// Give Credits for kill
+	APawn* KillerPawn = Cast<APawn>(Killer);
+	// Don't credit kills of self
+	if (KillerPawn && KillerPawn != VictimActor)
 	{
-		
-		ASCharacter* KillerPlayer = Cast<ASCharacter>(Killer);
-		ASPlayerState* PlayerState = Cast<ASPlayerState>(KillerPlayer->GetPlayerState());
-		if (KillerPlayer && PlayerState)
+		// Only Players will have a 'PlayerState' instance, bots have nullptr
+		// How to GetPlayerState : 템플릿이므로 원하는 대로 캐스팅 해서 바로 가져올 수 있다.
+		ASPlayerState* PS = KillerPawn->GetPlayerState<ASPlayerState>();
+		if (PS) 
 		{
-			PlayerState->AddCredits(CreditsPerKil);
+			PS->AddCredits(CreditsPerKill);
 		}
 	}
+
 	
 	UE_LOG(LogTemp,Log, TEXT("OnActorKilled : Victim %s, Killer : %s"),*GetNameSafe(VictimActor), *GetNameSafe(Killer));
 }

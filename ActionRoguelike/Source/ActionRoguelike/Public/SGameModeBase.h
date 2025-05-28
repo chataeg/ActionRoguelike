@@ -40,7 +40,7 @@ protected:
 	float SpawnTimerInterval;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Credits")
-	int32 CreditsPerKil;
+	int32 CreditsPerKill;
 
 	UFUNCTION()
 	void SpawnBotTimerElasped();
