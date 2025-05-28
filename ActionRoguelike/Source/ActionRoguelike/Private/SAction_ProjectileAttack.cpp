@@ -107,7 +107,7 @@ void USAction_ProjectileAttack::AttackDelay_Elasped(ACharacter* InstigatorChract
 		//UE_LOG(LogTemp, Warning, TEXT("Instigator: %s"), *GetInstigator()->GetName());
 	}
 	
-	StopAction_Implementation(InstigatorChracter);
+	StopAction(InstigatorChracter);
 }
 
 

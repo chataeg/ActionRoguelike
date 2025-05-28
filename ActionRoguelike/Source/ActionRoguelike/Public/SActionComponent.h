@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "SActionComponent.generated.h"
 
@@ -14,6 +15,8 @@ class ACTIONROGUELIKE_API USActionComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	FGameplayTagContainer ActiveGameplayTags;
 
 	// How to TSubclassof : 에디터에서 특정 클래스슬 지정 가능하게 만드는 템플릿 클래스 타입. (포인터 아님)
 	UFUNCTION(BlueprintCallable, Category = "Actions")

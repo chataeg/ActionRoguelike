@@ -152,8 +152,10 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		
 		ASCharacter* KillerPlayer = Cast<ASCharacter>(Killer);
 		ASPlayerState* PlayerState = Cast<ASPlayerState>(KillerPlayer->GetPlayerState());
-		PlayerState->AddCredits(CreditsPerKil);
-		
+		if (KillerPlayer && PlayerState)
+		{
+			PlayerState->AddCredits(CreditsPerKil);
+		}
 	}
 	
 	UE_LOG(LogTemp,Log, TEXT("OnActorKilled : Victim %s, Killer : %s"),*GetNameSafe(VictimActor), *GetNameSafe(Killer));

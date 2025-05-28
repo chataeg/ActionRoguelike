@@ -2,16 +2,47 @@
 
 
 #include "SAction.h"
+#include "SActionComponent.h"
+
+bool USAction::CanStart_Implementation(AActor* Instigator)
+{
+	if (IsRunning())
+	{
+		return false;
+	}
+	
+	USActionComponent* Comp = GetOwningComponent();
+
+	if (Comp->ActiveGameplayTags.HasAny(BlockedTags))
+	{
+		return false;
+	}
+
+	return true;
+}
 
 void USAction::StartAction_Implementation(AActor* Instigator)
 {
 	// How to GetSafeName : 크래시 없이 오브젝트의 이름을 반환. 이름이 없을 시 None  반환
 	UE_LOG(LogTemp, Log,TEXT("Running : %s"), *GetNameSafe(this));
+
+	USActionComponent* Comp = GetOwningComponent();
+	Comp->ActiveGameplayTags.AppendTags(GrantsTags);
+
+	bIsRunning = true;
 }
 
 void USAction::StopAction_Implementation(AActor* Instigator)
 {
 	UE_LOG(LogTemp, Log,TEXT("Stopped : %s"), *GetNameSafe(this));
+
+	// How to ensureAlways : false 일 때 매번 로그 출력
+	ensureAlways(bIsRunning);
+	
+	USActionComponent* Comp = GetOwningComponent();
+	Comp->ActiveGameplayTags.RemoveTags(GrantsTags);
+
+	bIsRunning = false;
 }
 
 class UWorld* USAction::GetWorld() const
@@ -24,4 +55,15 @@ class UWorld* USAction::GetWorld() const
 	}
 	
 	return nullptr;
+}
+
+USActionComponent* USAction::GetOwningComponent() const
+{
+	return Cast<USActionComponent>(GetOuter());
+}
+
+
+bool USAction::IsRunning() const
+{
+	return bIsRunning;
 }
