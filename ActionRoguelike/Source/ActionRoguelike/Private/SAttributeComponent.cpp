@@ -44,8 +44,6 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 		Delta *= DamageMultiplier;
 	}
 	
-	
-	
 	float OldHealth = Health;
 	float NewHealth = FMath::Clamp(OldHealth + Delta, 0.0f, HealthMax);
 
