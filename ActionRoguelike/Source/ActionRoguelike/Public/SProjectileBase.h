@@ -87,7 +87,7 @@ protected:
 	// BlueprintCallable to allow child classes to trigger explosions
 	// Not required for assignment, useful for expanding in Blueprint later on
 
-	// How to BlueprintNativeEvent : C++ 에서 정의 가능, BP 에서 오버라이드 가능
+	// How to BlueprintNativeEvent : C++ 에서 정의 가능, BP 에서 오버라이드 가능 / virtual 을 선언하지 않아도 가상 함수로 처리된다.
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Explode();
 

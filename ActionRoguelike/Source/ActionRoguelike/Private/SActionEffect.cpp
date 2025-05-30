@@ -36,7 +36,9 @@ void USActionEffect::StartAction_Implementation(AActor* Instigator)
 void USActionEffect::StopAction_Implementation(AActor* Instigator)
 {
 	// Don`t miss out last tick
-	if (GetWorld()->GetTimerManager().GetTimerRemaining(PeriodHandle) < KINDA_SMALL_NUMBER)
+	// How to Effect : 마지막 틱을 놓치지 않기 위해 남은 타이머의 시간을 확인한다.
+	// Ex) 타이머 = 3초 , 주기 = 1초 일때 1,2까지는 보장되지만 3초일 시 타이머가 먼저 종료되면 다음 틱(3번째) 가 실행 안될 수 있다.
+ 	if (GetWorld()->GetTimerManager().GetTimerRemaining(PeriodHandle) < KINDA_SMALL_NUMBER)
 	{
 			ExecutePeriodicEffect(Instigator);		
 	}
@@ -57,7 +59,7 @@ void USActionEffect::StopAction_Implementation(AActor* Instigator)
 
 void USActionEffect::ExecutePeriodicEffect_Implementation(AActor* Instigator)
 {
-
+	// Implemented in BP
 
 	
 }
