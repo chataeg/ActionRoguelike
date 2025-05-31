@@ -4,6 +4,7 @@
 #include "SWorldUserWidget.h"
 
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/Overlay.h"
 #include "Components/SizeBox.h"
 #include "kismet/GameplayStatics.h"
 

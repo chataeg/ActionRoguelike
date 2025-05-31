@@ -17,6 +17,10 @@ USAttributeComponent::USAttributeComponent()
 	
 	Health = 100;
 	HealthMax = 100;
+	Rage = 0.0f;
+	RageMax = 50.f;
+
+	
 	
 }
 
@@ -30,6 +34,11 @@ bool USAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
+bool USAttributeComponent::CanRage() const
+{
+	return Rage >= RageMax;
+}
+
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	if (!GetOwner()->CanBeDamaged() && Delta < 0.0f)
@@ -39,6 +48,7 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 
 	if (Delta < 0.0f)
 	{
+		// for console multiply
 		float DamageMultiplier = CVarDamageMultiplier.GetValueOnGameThread();
 
 		Delta *= DamageMultiplier;
@@ -48,12 +58,11 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	float NewHealth = FMath::Clamp(OldHealth + Delta, 0.0f, HealthMax);
 
 	float ActualDelta = NewHealth - OldHealth;
-	
+	 
 	// How to Broadcast :
 	Health = NewHealth;
 	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, ActualDelta);
-
-
+	
 	// Died
 	if (ActualDelta < 0.0f && Health == 0.0f)
 	{
@@ -67,6 +76,25 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	
 
 	return ActualDelta != 0;
+}
+
+bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	
+	const float OldRage = Rage;
+
+	Rage = FMath::Clamp(Rage+Delta, 0.0f, RageMax);
+	
+	float ActualDelta = Rage - OldRage;
+
+	// Will be zero delta if we already at max or min
+	if (!FMath::IsNearlyZero(ActualDelta))
+	{
+		OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta);
+		return true;
+	}
+
+	return false;
 }
 
 float USAttributeComponent::GetHealth() const

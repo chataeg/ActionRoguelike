@@ -7,6 +7,7 @@
 #include "SWorldUserWidget.generated.h"
 
 
+class UOverlay;
 class USizeBox;
 
 /**
@@ -27,8 +28,6 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	FVector WorldOffest;
-
-	
 	
 	UPROPERTY(BlueprintReadOnly, Category = "UI")
 	TObjectPtr<AActor> AttachedActor;

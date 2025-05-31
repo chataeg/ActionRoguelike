@@ -159,15 +159,22 @@ void ASCharacter::SprintStop()
 	ActionComp->StopActionByName(this, "Sprint");
 }
 
-
 void ASCharacter::PrimaryAttack()
 {
-	ActionComp->StartActionByName(this,"PrimaryAttack");
+	ActionComp->StartActionByName(this, "PrimaryAttack");
 }
 
 void ASCharacter::SecondaryAttack()
 {
-	ActionComp->StartActionByName(this,"SecondaryAttack");
+	if (AttributeComp->CanRage())
+	{
+		ActionComp->StartActionByName(this, "SecondaryAttack");
+		AttributeComp->ApplyRageChange(this, -100.f);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Not Enough to Rage !");
+	}
 }
 
 #pragma region SpawnProjectile
@@ -287,7 +294,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	}
 }
 */
-#pragma endregion 
+#pragma endregion
 
 void ASCharacter::Interact()
 {
@@ -302,7 +309,7 @@ void ASCharacter::Interact()
 
 void ASCharacter::Dash()
 {
-	ActionComp->StartActionByName(this,"Dash");
+	ActionComp->StartActionByName(this, "Dash");
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
@@ -311,9 +318,14 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 	if (Delta < 0.0f)
 	{
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+		
+
+		// Rage added equal to damage received (Abs to turn into positive rage number)
+		const float RageDelta = FMath::Abs(Delta);
+		AttributeComp->ApplyRageChange(this, RageDelta);
 	}
 
-
+	// When Dies
 	if (NewHealth <= 0.0f && Delta < 0.0f)
 	{
 		// How to DisableInput : 입력 자체를 끊는 것이 아니라 Pawn이 더 이상 컨트롤러의 입력을 받지 못하게 하는 것.

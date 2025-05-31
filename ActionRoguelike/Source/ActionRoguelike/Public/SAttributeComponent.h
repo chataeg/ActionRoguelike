@@ -7,8 +7,7 @@
 #include "SAttributeComponent.generated.h"
 
 // How to Delegate : 델리게이트 이름,  변수 자료형, 변수명 형태로 선언 / 파라미터 개수만큼 뒤에 Params 수정
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComp, float, NewHealth, float, Delta);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnAttributeChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComp, float, NewValue, float, Delta);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USAttributeComponent : public UActorComponent
@@ -47,8 +46,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float HealthMax;
-	// HealthMax, Stamina, Strength
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float Rage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float RageMax;
+	
+	
 public:
 
 	UFUNCTION(BlueprintCallable)
@@ -56,13 +61,22 @@ public:
 	
 	UFUNCTION(BlueprintCallable,Category = "Attributes")
 	bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool CanRage() const;
 	
 	// How to BlueprintAssignable : 델리게이트를 블루프린트에서 이벤트 바인딩 가능하게 해 줌.
 	UPROPERTY(BlueprintAssignable)
-	FOnHealthChanged OnHealthChanged;
+	FOnAttributeChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChanged OnRageChanged;
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
 
 
 	float GetHealth() const;

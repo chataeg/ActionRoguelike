@@ -14,7 +14,7 @@ ASMagicProjectile::ASMagicProjectile()
 {
 	SphereComp->SetSphereRadius(20.0f);
 	InitialLifeSpan = 10.f;
-	DamageAmount = 50.0f;
+	DamageAmount = 5.0f;
 }
 
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -25,6 +25,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 	if (OtherActor && OtherActor != GetInstigator())
 	{
 		
+		#pragma region Legacy
 		// How to GetComponentByClass : StaticClass 를 통해 액터가 컴포넌트를 가지고 있는지 확인
 		// USAttributeComponent* AttributeComp = Cast<USAttributeComponent>((OtherActor->GetComponentByClass(USAttributeComponent::StaticClass())));
 		// if (AttributeComp)
@@ -46,16 +47,19 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		//FName Muzzle = "Muzzle_01";
 
 		//static FGameplayTag Tag = FGameplayTag::RequestGameplayTag("Status.Parrying");
+		# pragma endregion
 		
 		USActionComponent* ActionComp = Cast<USActionComponent>(OtherActor->GetComponentByClass(USActionComponent::StaticClass()));
+
 		if (ActionComp && ActionComp->ActiveGameplayTags.HasTag(ParryTag))
 		{
 			// MovementComp->bRotationFollowsVelocity = true;  in projectilebase.cpp
 			MovementComp->Velocity = -MovementComp->Velocity;
-
-			SetInstigator(Cast<APawn>(OtherActor));
+			SetInstigator(Cast<APawn>(OtherActor));	
 			return;
 		}
+
+		
 		
 		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount,SweepResult))
 		{
