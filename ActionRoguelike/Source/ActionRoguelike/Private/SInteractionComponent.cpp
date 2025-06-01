@@ -37,7 +37,11 @@ void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FindBestInteractable();
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	if (MyPawn->IsLocallyControlled())
+	{
+		FindBestInteractable();
+	}
 }
 
 
@@ -135,18 +139,20 @@ void USInteractionComponent::FindBestInteractable()
 
 void USInteractionComponent::PrimaryInteract()
 {
+	ServerInteract(FocusedActor);
+}
 
-	if (FocusedActor == nullptr)
+void USInteractionComponent::ServerInteract_Implementation(AActor* InFocus)
+{
+	if (InFocus == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1,1.0f, FColor::Red, "No Focus Actor to Interact");
 		return;
 	}
+	
 	// Pawn 으로 강제 형변환. 형변환시 불가하면 nullptr 이 된다. 
 	APawn* MyPawn = Cast<APawn>(GetOwner());
 
 	// 인터페이스 실행은 Execute_메서드이름  으로 한다.
-	ISGameplayInterface::Execute_Interact(FocusedActor, MyPawn);
-
-		
+	ISGameplayInterface::Execute_Interact(InFocus, MyPawn);
 }
-

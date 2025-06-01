@@ -22,7 +22,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes", meta = (DisplayName = "IsAlive"))
 	static bool IsActorAlive(AActor* Actor);
-
 	
 	// Sets default values for this component's properties
 	USAttributeComponent();

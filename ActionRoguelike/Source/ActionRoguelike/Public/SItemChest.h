@@ -23,12 +23,22 @@ public:
 	// 그냥 사용한다면 Interact 로 사용 가능.
 	void Interact_Implementation(APawn* InstigatorPawn);
 
-public:	
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	// Sets default values for this actor's properties
 	ASItemChest();
 
 protected:
 
+	// How to Replicate property : Repliacted 명시해줘야함. 
+	//UPROPERTY(Replicated, BlueprintReadOnly)
+	// How to RepNotify : ReplicatedUsing 명시
+	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", BlueprintReadOnly)
+	bool bLidOpened;
+
+	UFUNCTION()
+	void OnRep_LidOpened();
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> BaseMesh;
 
