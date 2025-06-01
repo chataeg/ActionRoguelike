@@ -35,8 +35,11 @@ public:
 	bool StopActionByName(AActor* Instigator, FName ActionName);
 
 protected:
-	/* Granted abilities at game start*/
 
+	UFUNCTION(Server, Reliable)
+	void ServerStartAction(AActor* Instigator, FName ActionName);
+	
+	/* Granted abilities at game start*/
 	UPROPERTY(EditAnywhere, Category = "Actions")
 	TArray<TSubclassOf<USAction>> DefaultActions;
 	
