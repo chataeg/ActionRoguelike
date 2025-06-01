@@ -40,11 +40,19 @@ protected:
 	// --
 	// Category = "" - display only for detail panels and blueprint context menu.
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Attributes")
 	float Health;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Attributes")
 	float HealthMax;
+
+	// UPROPERTY(ReplicatedUsing = "")
+	// bool bIsAlive;
+	
+	// How to NetMulticast : 
+	UFUNCTION(NetMulticast, Reliable) // @fixme : mark as unreliable once we moved the 'state' our of scharacter
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewValue, float Delta);
+	
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float Rage;

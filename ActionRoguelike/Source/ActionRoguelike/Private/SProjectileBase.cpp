@@ -57,7 +57,9 @@ ASProjectileBase::ASProjectileBase()
 	AudioComp->SetupAttachment(SphereComp);
 
 	DamageAmount = 0.0f;
-
+	// How to SetRepliactes : 액터의 존재 자체를 서버에 복제 한다는 설정. 여기서 위치 회전 스케일 은 기본적으로 복제된다.
+	// 여기서는 ProejctileMovementComponent를 사용했는데, 기본적으로 서버 전용 컴포넌트이기 때문에 서버와 동기화 된다.
+	SetReplicates(true);
 	
 }
 

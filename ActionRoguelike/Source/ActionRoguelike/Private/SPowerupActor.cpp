@@ -15,7 +15,8 @@ ASPowerupActor::ASPowerupActor()
 	
 	MeshComp->SetCollisionProfileName("Powerup");
 	RespawnTime = 10.f;
-	
+
+	SetReplicates(true);
 
 }
 

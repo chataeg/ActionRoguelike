@@ -28,9 +28,9 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	FVector WorldOffest;
-	
-	UPROPERTY(BlueprintReadOnly, Category = "UI")
+
+	// How to ExposeOnSpawn : true 로 설정해놓으면 BP 생성할 떄 input 핀이 생김
+	UPROPERTY(BlueprintReadWrite, Category = "UI", meta = (ExposeOnSpawn=true))
 	TObjectPtr<AActor> AttachedActor;
-	 
 	
 };
