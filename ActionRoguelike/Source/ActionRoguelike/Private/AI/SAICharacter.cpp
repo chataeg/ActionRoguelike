@@ -41,7 +41,7 @@ void ASAICharacter::PostInitializeComponents()
 	
 	// Migrated to AIPerceptionComponent
 	//AIPerceptionComp->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
-	AttributeComp->OnHealthChanged.AddDynamic(this,&ASAICharacter::OnHealthChanged)
+	AttributeComp->OnHealthChanged.AddDynamic(this,&ASAICharacter::OnHealthChanged);
 	
 }
 
@@ -122,8 +122,9 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 			
 			}
 		}
-	}
 }
+
+
 
 FGenericTeamId ASAICharacter::GetGenericTeamId() const
 {

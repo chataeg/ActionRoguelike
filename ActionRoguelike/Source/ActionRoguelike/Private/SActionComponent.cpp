@@ -4,6 +4,7 @@
 #include "SActionComponent.h"
 
 #include "SAction.h"
+#include "ActionRoguelike/ActionRoguelike.h"
 
 USActionComponent::USActionComponent()
 {
@@ -27,9 +28,15 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);
-
+	//FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);
+	
+	for (USAction* Action : Actions)
+	{
+		FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
+		FString ActionMsg = FString::Printf(TEXT("[%s] Action: %s"), *GetNameSafe(GetOwner()), *GetNameSafe(Action));
+		LogOnScreen(this, ActionMsg, TextColor, 0.0f);
+	}
 }
 void USActionComponent::AddAction(AActor* Instigator,TSubclassOf<USAction> ActionClass)
 {
