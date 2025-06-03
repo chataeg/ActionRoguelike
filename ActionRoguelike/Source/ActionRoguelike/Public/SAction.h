@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "SAction.generated.h"
 
+class USActionComponent;
 class UWorld;
 
 /**
@@ -18,6 +19,9 @@ class ACTIONROGUELIKE_API USAction : public UObject
 	GENERATED_BODY()
 protected:
 
+	UPROPERTY(Replicated)
+	TObjectPtr<USActionComponent> ActionComp;
+	
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	USActionComponent* GetOwningComponent() const;
 
@@ -29,9 +33,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 	FGameplayTagContainer BlockedTags;
 
+
+	UPROPERTY(ReplicatedUsing = "OnRep_IsRunning")
 	bool bIsRunning;
+
+	UFUNCTION()
+	void OnRep_IsRunning();
 	
 public:
+
+	void Initialize(USActionComponent* NewActionComponent);
+	
 	/* Start immediately when added to an action component */
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	bool bAutoStart;
@@ -57,5 +69,7 @@ public:
 	UFUNCTION()
 	virtual class UWorld* GetWorld() const override;
 
+
+	virtual bool IsSupportedForNetworking() const override;
 	
 };

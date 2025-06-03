@@ -146,7 +146,7 @@ void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* Instiga
 	OnHealthChanged.Broadcast(InstigatorActor,this, NewValue, Delta);	
 }
 
-
+// How to GetLifetimeRepliactedProps : 헤더에 Replicated 를 명시해 놓으면 헤더 툴이 알아서 generated.h 에 포함시킴
 void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
