@@ -63,31 +63,28 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	
 	float OldHealth = Health;
 	float NewHealth = FMath::Clamp(OldHealth + Delta, 0.0f, HealthMax);
-
 	float ActualDelta = NewHealth - OldHealth;
-	 
 	
-	Health = NewHealth;
-	// How to Broadcast :
-	//OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, ActualDelta);
-
-	if (ActualDelta != 0.0f)
+	// Is Server?
+	if (GetOwner()->HasAuthority())
 	{
-		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
-	}
-	
-	// Died
-	if (ActualDelta < 0.0f && Health == 0.0f)
-	{
-		ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
-		if (GM)
+		Health = NewHealth;
+		if (ActualDelta != 0.0f)
 		{
-			GM->OnActorKilled(GetOwner(), InstigatorActor);	
+			MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
 		}
-		 
+
+		// Died
+		if (ActualDelta < 0.0f && Health == 0.0f)
+		{
+			ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
+			if (GM)
+			{
+				GM->OnActorKilled(GetOwner(), InstigatorActor);	
+			}
+		}
 	}
 	
-
 	return ActualDelta != 0;
 }
 
@@ -143,6 +140,7 @@ bool USAttributeComponent::IsActorAlive(AActor* Actor)
 
 void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewValue, float Delta)
 {
+	// How to Broadcast :
 	OnHealthChanged.Broadcast(InstigatorActor,this, NewValue, Delta);	
 }
 

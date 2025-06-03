@@ -9,6 +9,21 @@
 class USActionComponent;
 class UWorld;
 
+
+USTRUCT()
+struct FActionRepData
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY()
+	bool  bIsRunning;
+
+	UPROPERTY()
+	TObjectPtr<AActor> Instigator;
+};
+
 /**
  * 
  */
@@ -33,12 +48,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 	FGameplayTagContainer BlockedTags;
 
-
-	UPROPERTY(ReplicatedUsing = "OnRep_IsRunning")
-	bool bIsRunning;
+	UPROPERTY(ReplicatedUsing = "OnRep_RepData")
+	FActionRepData RepData;
 
 	UFUNCTION()
-	void OnRep_IsRunning();
+	void OnRep_RepData();
 	
 public:
 
@@ -63,13 +77,11 @@ public:
 	// How to FName : Name Pool 에 문자열을 등록해 인덱스끼리 비교하는 해시 시스템이기 때문에 빠르다.
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	FName ActionName;
-
-
+	
 	// BP 에서 접근하기 위해서 오버라이딩 : BP 의 여러 함수들을 접근하기 위해서
 	UFUNCTION()
 	virtual class UWorld* GetWorld() const override;
-
-
+	
 	virtual bool IsSupportedForNetworking() const override;
 	
 };

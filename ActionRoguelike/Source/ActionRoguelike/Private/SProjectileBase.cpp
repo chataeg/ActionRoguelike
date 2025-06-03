@@ -72,6 +72,7 @@ void ASProjectileBase::Explode_Implementation()
 	 {
 	 	// Deprecated
 	 	//UGameplayStatics::SpawnEmitterAtLocation(this,ImpactVFX,GetActorLocation(),GetActorRotation());
+	 	
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactVFX,GetActorLocation(), GetActorRotation(),FVector(1.0f),true,true,ENCPoolMethod::AutoRelease,true);
 		 	
 	 	 UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());

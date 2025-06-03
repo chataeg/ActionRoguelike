@@ -58,10 +58,8 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 			SetInstigator(Cast<APawn>(OtherActor));	
 			return;
 		}
-
 		
-		
-		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount,SweepResult))
+		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult))
 		{
 			Explode();
 
@@ -70,8 +68,6 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 				ActionComp->AddAction(GetInstigator(), BurningActionClass );
 			}
 		}
-		
-		
 	}
 }
 
