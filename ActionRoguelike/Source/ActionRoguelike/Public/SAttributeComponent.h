@@ -59,8 +59,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float RageMax;
-	
-	
+
 public:
 
 	UFUNCTION(BlueprintCallable)
@@ -84,7 +83,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
-
 
 	float GetHealth() const;
 	float GetHealthMax() const;

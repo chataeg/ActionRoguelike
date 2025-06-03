@@ -32,7 +32,7 @@ protected:
 
 	// How to Replicate property : Repliacted 명시해줘야함. 
 	//UPROPERTY(Replicated, BlueprintReadOnly)
-	// How to RepNotify : ReplicatedUsing 명시
+	// How to RepNotify / How to ReplicateedUsing : ReplicatedUsing 명시
 	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", BlueprintReadOnly)
 	bool bLidOpened;
 

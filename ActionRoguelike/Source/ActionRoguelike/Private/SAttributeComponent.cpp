@@ -21,7 +21,9 @@ USAttributeComponent::USAttributeComponent()
 	Rage = 0.0f;
 	RageMax = 50.f;
 
+	// How to SetIsReplicatedByDefault : 컴포넌트에만 존재하는 함수. 컴포넌트가 붙는 시점에 리플리케이션을 켜도록 설정해 주는 기능
 	SetIsReplicatedByDefault(true);
+	// 이 컴포넌트 인스턴스를 런타임에 리플리케이션 대상으로 지정한다. 어떤 컴포넌트들은 리플리케이트 하지 않게 할 수 있어야 한다.(성능 최적화, 개발자 재량)
 	SetIsReplicated(true);
 	
 	
@@ -64,8 +66,9 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 
 	float ActualDelta = NewHealth - OldHealth;
 	 
-	// How to Broadcast :
+	
 	Health = NewHealth;
+	// How to Broadcast :
 	//OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, ActualDelta);
 
 	if (ActualDelta != 0.0f)
@@ -148,6 +151,7 @@ void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	// How to DOREPLIFETIME : 원하는 프로퍼티를 리플리케이션 대상으로 지정해서 값 변경이 있을 때 클라이언트 <-> 서버 간에 동기화 된다.
 	DOREPLIFETIME(USAttributeComponent, Health);
 	DOREPLIFETIME(USAttributeComponent, HealthMax);
 

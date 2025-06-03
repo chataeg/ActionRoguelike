@@ -38,12 +38,10 @@ ASAICharacter::ASAICharacter()
 void ASAICharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-
+	
 	// Migrated to AIPerceptionComponent
 	//AIPerceptionComp->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
-	AttributeComp->OnHealthChanged.AddDynamic(this,&ASAICharacter::OnHealthChanged);
-	
+	AttributeComp->OnHealthChanged.AddDynamic(this,&ASAICharacter::OnHealthChanged)
 	
 }
 
@@ -62,11 +60,8 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget)
 void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
                                     float Delta)
 {
-	
 	if (Delta < 0.0f)
-	{
-
-
+	
 		if (ActiveHealthBar == nullptr)
 		{
 			ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
@@ -112,8 +107,6 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 
 			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			GetCharacterMovement()->DisableMovement();
-			
-
 			
 			// Set Lifespan
 

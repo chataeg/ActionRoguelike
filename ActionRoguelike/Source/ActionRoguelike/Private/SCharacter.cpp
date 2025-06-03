@@ -25,8 +25,7 @@ ASCharacter::ASCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	// 컨트롤러 회전을 캐릭터가 따라가지 않게 함 (카메라와 입력 분리)
 	bUseControllerRotationYaw = false;
-
-
+	
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	// 카메라가 컨트롤러 회전을 따라감
 	SpringArmComp->bUsePawnControlRotation = true;

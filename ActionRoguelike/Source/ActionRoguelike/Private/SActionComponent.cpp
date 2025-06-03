@@ -73,7 +73,7 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 				continue;
 			}
 
-			// Is Client
+			// Is Client : 클라이언트에서 실행한 동작을 서버에서도 보여주기 위헤 RPC 호출
 			if (!GetOwner()->HasAuthority())
 			{
 				ServerStartAction(Instigator, ActionName);
