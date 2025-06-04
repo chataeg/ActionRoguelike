@@ -330,6 +330,8 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 		// How to DisableInput : 입력 자체를 끊는 것이 아니라 Pawn이 더 이상 컨트롤러의 입력을 받지 못하게 하는 것.
 		APlayerController* PC = Cast<APlayerController>(GetController());
 		DisableInput(PC);
+
+		SetLifeSpan(5.0f);
 	}
 }
 
