@@ -53,6 +53,13 @@ void USActionComponent::AddAction(AActor* Instigator,TSubclassOf<USAction> Actio
 		return;
 	}
 	
+	// Skip for clients
+	if (!GetOwner()->HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client attempting to AddAction. [Class: %s]"), *GetNameSafe(ActionClass));
+		return;
+	}
+	
 	USAction* NewAction = NewObject<USAction>(GetOwner(), ActionClass);
 	if (ensure(NewAction))
 	{
@@ -94,7 +101,8 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 			{
 				ServerStartAction(Instigator, ActionName);
 			}
-			
+
+			// 로컬에서도 시작
 			Action->StartAction(Instigator);
 			return true;
 		}
@@ -111,6 +119,13 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 		{
 			if (Action->IsRunning())
 			{
+				// Is Client : 클라이언트에서 실행한 동작을 서버에서도 보여주기 위헤 RPC 호출
+				if (!GetOwner()->HasAuthority())
+				{
+					ServerStopAction(Instigator, ActionName);
+				}
+
+				// 로컬에서도 중단
 				Action->StopAction(Instigator);
 				return true;	
 			}
@@ -119,10 +134,17 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 	return false;
 }
 
+
 void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
 {
 	StartActionByName(Instigator, ActionName);
 }
+
+void USActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StopActionByName(Instigator, ActionName);
+}
+
 
 bool USActionComponent::ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch,
 	FReplicationFlags* RepFlags)
