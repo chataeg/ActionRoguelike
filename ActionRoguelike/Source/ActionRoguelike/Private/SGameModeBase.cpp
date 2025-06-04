@@ -48,6 +48,8 @@ void ASGameModeBase::KillAll()
 	}
 }
 
+
+
 void ASGameModeBase::SpawnBotTimerElasped()
 {
 	if (!CVarSpawnBots.GetValueOnGameThread())
@@ -162,4 +164,12 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 
 	
 	UE_LOG(LogTemp,Log, TEXT("OnActorKilled : Victim %s, Killer : %s"),*GetNameSafe(VictimActor), *GetNameSafe(Killer));
+}
+
+void ASGameModeBase::WriteSaveGame()
+{
+}
+
+void ASGameModeBase::LoadSaveGame()
+{
 }
